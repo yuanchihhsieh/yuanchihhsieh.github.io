@@ -3,6 +3,22 @@ gsap.registerPlugin(ScrollTrigger);
 
 // Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', (event) => {
+    // Mobile menu toggle
+    const navToggle = document.querySelector('.nav-toggle');
+    const nav = document.querySelector('nav');
+
+    navToggle.addEventListener('click', () => {
+        nav.classList.toggle('active');
+    });
+
+    // Close menu when a link is clicked
+    const navLinks = document.querySelectorAll('nav ul li a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            nav.classList.remove('active');
+        });
+    });
+    
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
 
