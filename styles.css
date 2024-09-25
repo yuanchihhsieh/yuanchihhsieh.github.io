@@ -105,23 +105,23 @@ nav ul li a {
 
 /* Contact Box Styling */
 .box a {
-    color: #0066cc; /* Changed to a more visible blue color */
+    color: #0066cc;
     text-decoration: none;
     word-break: break-word;
     overflow-wrap: break-word;
     display: inline-block;
     max-width: 100%;
-    transition: color 0.3s ease; /* Smooth transition for hover effect */
+    transition: color 0.3s ease;
 }
 
 .box a:hover {
-    color: #004080; /* Darker blue on hover */
+    color: #004080;
     text-decoration: underline;
 }
 
 /* General hyperlink styling */
 a {
-    color: #0066cc; /* Apply the same color to all links in the document */
+    color: #0066cc;
     text-decoration: none;
     transition: color 0.3s ease;
 }
