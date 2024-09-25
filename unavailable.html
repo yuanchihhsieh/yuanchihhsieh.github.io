@@ -20,19 +20,33 @@
             text-align: center;
             padding: 1rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
         }
-
-        #nav-placeholder {
+        .nav-toggle {
+            display: none;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 101;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .nav-toggle span {
             display: block;
+            width: 25px;
+            height: 3px;
+            background-color: #000;
+            margin: 5px 0;
         }
         nav ul {
             padding: 0;
             list-style-type: none;
+            margin: 0;
         }
         nav ul li {
             display: inline;
             margin: 0 10px;
-            margin-right: 20px;
         }
         nav ul li a {
             color: #000;
@@ -70,14 +84,48 @@
             font-style: italic;
         }
         .vertical-ellipsis {
-            text-align: center; /* Center the vertical dots */
-            line-height: 1;     /* Reduce line height to tighten the space between dots */
-            font-size: 1.5em;   /* Optional: Make the dots larger if desired */
+            text-align: center;
+            line-height: 1;
+            font-size: 1.5em;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: block;
+            }
+            nav {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: rgba(255, 255, 255, 0.9);
+            }
+            nav.active {
+                display: block;
+            }
+            nav ul {
+                flex-direction: column;
+            }
+            nav ul li {
+                display: block;
+                margin: 0;
+                text-align: center;
+            }
+            nav ul li a {
+                display: block;
+                padding: 10px 0;
+            }
         }
     </style>
 </head>
 <body>
     <header>
+        <div class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
         <nav>
             <ul>
                 <li><a href="index.html">Home</a></li>
@@ -109,5 +157,23 @@
             <p class="footnote">* No promises. Procrastination schedule is subject to change without notice.</p>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const navToggle = document.querySelector('.nav-toggle');
+            const nav = document.querySelector('nav');
+
+            navToggle.addEventListener('click', () => {
+                nav.classList.toggle('active');
+            });
+
+            // Close menu when a link is clicked
+            const navLinks = document.querySelectorAll('nav ul li a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    nav.classList.remove('active');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
