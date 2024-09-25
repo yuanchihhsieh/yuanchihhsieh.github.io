@@ -119,6 +119,17 @@ nav ul li a {
     text-decoration: underline;
 }
 
+/* Icon Styling */
+.box .fab {
+    color: #000;  /* Black color for icons */
+    transition: opacity 0.3s ease;
+    margin-right: 15px;
+}
+
+.box .fab:hover {
+    opacity: 0.7;  /* Slight fade effect on hover */
+}
+
 /* General hyperlink styling */
 a {
     color: #0066cc;
