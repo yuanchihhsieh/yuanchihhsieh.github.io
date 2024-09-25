@@ -1,3 +1,4 @@
+/* Global Styles */
 body, html {
     margin: 0;
     padding: 0;
@@ -15,6 +16,7 @@ body, html {
     z-index: 0;
 }
 
+/* Header Styles */
 header {
     background-color: rgba(255, 255, 255, 0.8);
     color: #000;
@@ -48,6 +50,7 @@ nav ul li a {
     text-decoration: none;
 }
 
+/* Showcase Section */
 #showcase {
     text-align: center;
     padding: 2rem;
@@ -76,6 +79,7 @@ nav ul li a {
     border-radius: 5px;
 }
 
+/* Content Section */
 #content {
     padding: 2rem;
     background-color: rgba(255, 255, 255, 0.9);
@@ -97,4 +101,60 @@ nav ul li a {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     flex: 1;
     min-width: 250px;
+}
+
+/* Contact Box Styling */
+.box a {
+    color: #0066cc; /* Changed to a more visible blue color */
+    text-decoration: none;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    display: inline-block;
+    max-width: 100%;
+    transition: color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.box a:hover {
+    color: #004080; /* Darker blue on hover */
+    text-decoration: underline;
+}
+
+/* General hyperlink styling */
+a {
+    color: #0066cc; /* Apply the same color to all links in the document */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #004080;
+    text-decoration: underline;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    /* ... (previous styles remain unchanged) ... */
+
+    .box {
+        padding: 1rem;
+        min-width: 200px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .box p {
+        margin: 0.5em 0;
+    }
+}
+
+@media (max-width: 480px) {
+    /* ... (previous styles remain unchanged) ... */
+
+    .box {
+        padding: 0.8rem;
+        min-width: 150px;
+        width: 100%;
+        box-sizing: border-box;
+    }
 }
