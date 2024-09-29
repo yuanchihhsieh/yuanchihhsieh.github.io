@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teaching - Yuan-Chih Hsieh</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+    <style>
+        /* Additional styles specific to the teaching page */
+        #content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .page-title {
+            font-size: 2.0em;
+            margin-bottom: 0.5em;
+            color: #000;
+            padding-bottom: 20px;
+        }
+
+        h2 {
+            margin-top: 60px;
+        }
+
+        .course-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        .course-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .course-title {
+            font-size: 1.25em;
+            font-weight: bold;
+            margin: 0;
+        }
+        .course-code {
+            background-color: #000;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .course-role {
+            color: #666;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+        .course-description {
+            margin-bottom: 15px;
+        }
+        .course-links a {
+            color: #000;
+            text-decoration: none;
+            margin-right: 15px;
+            font-weight: bold;
+            border: 1px solid #000;  /* Add this line */
+            padding: 5px 10px;       /* Add this line */
+            border-radius: 4px;      /* Add this line */
+            display: inline-block;   /* Add this line */
+            transition: background-color 0.3s, color 0.3s;  /* Add this line */
+        }
+
+        .course-links a:hover {
+            background-color: #000;  /* Change this line */
+            color: #fff;             /* Add this line */
+        }
+        @media (max-width: 768px) {
+            .course-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .course-code {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="bg-canvas"></canvas>
+    
+    <header>
+        <div id="navbar">
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="unavailable.html">About</a></li>
+                    <li><a href="unavailable.html">Publications</a></li>
+                    <li><a href="unavailable.html">Projects</a></li>
+                    <li><a href="teaching.html">Teaching</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="content">
+        <h1 class="page-title">Teaching</h1>
+        <p>This page features a selection of courses I have taught. For more details on each course, please visit the <a href="https://www-math.umd.edu/undergraduate/departmental-course-pages/offered-courses.html"  target="_blank" rel="noopener noreferrer">UMD Mathematics Department course page</a> or <a href="https://bulletins.psu.edu/undergraduate/"  target="_blank" rel="noopener noreferrer">Penn State Undergraduate Bulltetin page</a>.</p>
+
+        <h2>University of Maryland</h2>
+
+        <div class="course-card">
+            <div class="course-header">
+                <h3 class="course-title">Computational Methods</h3>
+                <span class="course-code">AMSC 460</span>
+            </div>
+            <p class="course-role">Teaching Assistant</p>
+            <p class="course-description">
+                Basic computational methods for interpolation, least squares, approximation, numerical quadrature, numerical solution of nonlinear equations, systems of linear equations, and initial value problems for ordinary differential equations. Emphasis on the methods and their computational properties rather on their analytic aspects.
+            </p>
+            <div class="course-links">
+                <a href="#" onclick="return false;">Summer I 2024</a>
+                <a href="#" onclick="return false;">Fall 2024</a>
+            </div>
+        </div>
+
+        <div class="course-card">
+            <div class="course-header">
+                <h3 class="course-title">Introduction to Linear Algebra</h3>
+                <span class="course-code">MATH 240</span>
+            </div>
+            <p class="course-role">Teaching Assistant</p>
+            <p class="course-description">
+                Basic concepts of linear algebra: vector spaces, applications to line and plane geometry, linear equations and matrices, similar matrices, linear transformations, eigenvalues, determinants and quadratic forms.
+            </p>
+            <div class="course-links">
+                <a href="#" onclick="return false;">Spring 2024</a>
+            </div>
+        </div>
+
+        <div class="course-card">
+            <div class="course-header">
+                <h3 class="course-title">Elementary Statistics and Probability</h3>
+                <span class="course-code">STAT 100</span>
+            </div>
+            <p class="course-role">Teaching Assistant</p>
+            <p class="course-description">
+                Introduces the basic concepts of statistical reasoning and modern computer based techniques for organizing and interpreting data. Students will learn how to summarize data, how to interpret variability in data in terms of probability, and how to apply statistical methods to examples. Real world applications from the social, behavioral and biological sciences are used to illustrate the usefulness of statistical techniques.
+            </p>
+            <div class="course-links">
+                <a href="#" onclick="return false;">Summer II 2024</a>
+            </div>
+        </div>
+
+        <div class="course-card">
+            <div class="course-header">
+                <h3 class="course-title">Applied Probability and Statistics I</h3>
+                <span class="course-code">STAT 400</span>
+            </div>
+            <p class="course-role">Teaching Assistant</p>
+            <p class="course-description">
+                An introductory course to probability, the mathematical theory of randomness, and to statistics, the mathematical science of data analysis and analysis in the presence of uncertainty. Applications of statistics and probability to real world problems are also presented.
+            </p>
+            <div class="course-links">
+                <a href="#" onclick="return false;">Fall 2023</a>
+                <a href="#" onclick="return false;">Summer I 2024</a>
+            </div>
+        </div>
+
+        <h2>The Pennsylvania State University</h2>
+
+        <div class="course-card">
+            <div class="course-header">
+                <h3 class="course-title">Data Structures and Algorithms</h3>
+                <span class="course-code">CMPSC 465</span>
+            </div>
+            <p class="course-role">Undergraduate Teaching Assistant</p>
+            <p class="course-description">
+                Fundamental concepts of computer science: data structures, analysis of algorithms, recursion, trees, sets, graphs, sorting.
+            </p>
+            <div class="course-links">
+                <a href="#" onclick="return false;">Fall 2022</a>
+                <a href="#" onclick="return false;">Spring 2023</a>
+            </div>
+        </div>
+
+        <div class="course-card">
+            <div class="course-header">
+                <h3 class="course-title">Introductory Macroeconomic Analysis and Policy</h3>
+                <span class="course-code">ECON 104</span>
+            </div>
+            <p class="course-role">Undergraduate Teaching Assistant</p>
+            <p class="course-description">
+                Introduces macroeconomic analysis and policy, teaching students to apply economic tools to major issues like national income, unemployment, and inflation in a global context.
+            </p>
+            <div class="course-links">
+                <a href="#" onclick="return false;">Fall 2020</a>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
