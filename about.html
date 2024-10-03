@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Yuan-Chih Hsieh</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+    <style>
+        #content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-title {
+            font-size: 2.0em;
+            margin-bottom: 0.5em;
+            color: #000;
+            padding-left: 0.5em;
+            padding-bottom: 20px;
+        }
+
+        /* About Page Styles */
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-photo {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center 10%; /* Adjusted to move the head lower in the frame */
+            margin-bottom: 20px;
+            border: 4px solid #0066cc;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-header h2 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .about-header p {
+            color: #666;
+            font-style: italic;
+        }
+
+        .about-section {
+            margin-bottom: 30px;
+        }
+
+        .about-section h2 {
+            color: #333;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .about-section p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .about-section a {
+            color: #0066cc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .about-section a:hover {
+            color: #004080;
+            text-decoration: underline;
+        }
+
+        /* Coffee Map Styles */
+        .coffee-map {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .coffee-map h3 {
+            margin-bottom: 15px;
+            color: #6F4E37; /* Coffee brown color */
+        }
+
+        .coffee-map-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .map-caption {
+            margin-top: 10px;
+            font-style: italic;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .profile-photo {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="bg-canvas"></canvas>
+
+    <header>
+        <div id="navbar">
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="unavailable.html">Publications</a></li>
+                    <li><a href="unavailable.html">Projects</a></li>
+                    <li><a href="teaching.html">Teaching</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="content" class="section">
+        <h1 class="page-title">About Me</h1>
+        <div class="about-content">
+            <div class="about-header">
+                <img src="img/myself.JPG" alt="Yuan-Chih Hsieh" class="profile-photo">
+                <h2>Yuan-Chih Hsieh</h2>
+                <p>Ph.D. Student in Applied Mathematics, Statistics & Scientific Computation</p>
+            </div>
+            <div class="about-section">
+                <h2>Academic Journey</h2>
+                <p>
+                    I'm currently a Ph.D. student in the <a href="https://amsc.umd.edu/" target="_blank" rel="noopener noreferrer">Applied Mathematics, Statistics & Scientific Computation (AMSC)</a> program at the <a href="https://umd.edu/" target="_blank" rel="noopener noreferrer">University of Maryland, College Park</a>. My passion lies at the intersection of computer science, meteorology, and mathematics—fields that might seem distinct, but their synergy drives my research and academic curiosity.
+                </p>
+                <p>
+                    My journey into interdisciplinary research began at <a href="https://www.psu.edu/" target="_blank" rel="noopener noreferrer">Pennsylvania State University</a>, where I earned double B.S. degrees in Meteorology and Atmospheric Science, and Computer Science in May 2023. During my undergraduate years, I had the privilege of working with Professor <a href="https://www.met.psu.edu/directory/xingchao-xc-chen" target="_blank" rel="noopener noreferrer">Xingchao Chen</a> on a project focused on Mesoscale Convective Systems (MCS). This research demonstrated my commitment to bridging diverse disciplines to solve real-world problems and fueled my desire to continue working in areas that push the boundaries of computational science and meteorology. Now, as I dive into the world of mathematics, you could say I'm really trying to tackle the "root" of the problem!
+                </p>
+            </div>
+
+            <div class="about-section">
+                <h2>Current Research</h2>
+                <p>
+                    Under the mentorship of Professor <a href="https://aosc.umd.edu/people/kayo-ide" target="_blank" rel="noopener noreferrer">Kayo Ide</a>, my current research dives deep into data assimilation—an area where observational data is integrated into numerical models to improve prediction accuracy.
+                </p>
+                <p>
+                    With a strong foundation in both meteorology and computer science, I am motivated to tackle the complex challenges involved in modeling and prediction. I am especially excited about the potential of data assimilation to revolutionize the way we predict large-scale systems, such as weather patterns. In addition to my core research, I am exploring how emerging technologies, such as machine learning and high-performance computing, can complement traditional methods to improve weather models, making them more efficient, accurate, and adaptable to new data.
+                </p>
+            </div>
+
+            <div class="about-section">
+                <h2>Beyond Academia</h2>
+                <p>
+                    In addition to my research, I have a deep passion for coffee brewing. I find joy in the process of making a great cup of coffee, as there are so many variables involved, and any change can significantly impact the final cup. This is where my nerdy side comes into play; I love analyzing and experimenting with different brewing techniques, grind sizes, and extraction times to achieve the perfect cup. For me, crafting coffee is not just a routine, but a way to balance my focus and creativity. You'll often find me brewing a fresh cup, which keeps me energized and inspired throughout my research sessions.
+                </p>
+                <div class="coffee-map">
+                    <h3>Coffee Regions I've Explored</h3>
+                    <img src="img/coffee.png" alt="Map of coffee regions I have tasted" class="coffee-map-image">
+                    <p class="map-caption">Highlighted regions represent the coffee origins I've had the pleasure of tasting so far in my coffee journey.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const navToggle = document.querySelector('.nav-toggle');
+            const nav = document.querySelector('nav');
+
+            navToggle.addEventListener('click', () => {
+                nav.classList.toggle('active');
+            });
+
+            // Close menu when a link is clicked
+            const navLinks = document.querySelectorAll('nav ul li a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    nav.classList.remove('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
