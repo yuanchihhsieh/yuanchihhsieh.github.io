@@ -305,12 +305,12 @@
                 <div class="coffee-map">
                     <h3>Coffee Regions I've Explored</h3>
                     <img src="img/coffee.png" alt="Map of coffee regions I have tasted" class="coffee-map-image">
-                    <p class="map-caption">Highlighted regions represent the coffee origins I've had the pleasure of tasting so far in my coffee journey.</p>
+                    <p class="map-caption">Highlighted regions represent the coffee origins I've had the pleasure of tasting so far in my coffee journey. There are currently X countries highlighted. Can you find them all?</p>
                 </div>
             <div class="world-map-section">
                 <h3>Coffee Regions I've Explored</h3>
                 <div id="world-map"></div>
-                <p class="map-caption">Highlighted regions represent the coffee origins I've had the pleasure of tasting so far in my coffee journey.</p>
+                <p class="map-caption">Highlighted regions represent the coffee origins I've had the pleasure of tasting so far in my coffee journey. There are currently X countries highlighted. Can you find them all?</p>
             </div>
 
             <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -319,8 +319,8 @@
                 document.addEventListener('DOMContentLoaded', function() {
                     const worldMapSection = document.querySelector('.world-map-section');
                     const coffeeMap = document.querySelector('.coffee-map');
-                    const minWidthForInteractiveMap = 768; // Minimum width to show interactive map
-                    let mapRendered = false; // Flag to track if the map has been rendered
+                    const minWidthForInteractiveMap = 768;
+                    let mapRendered = false;
 
                     function checkScreenSize() {
                         if (window.innerWidth >= minWidthForInteractiveMap) {
@@ -369,6 +369,17 @@
                             'Myanmar',
                             'Taiwan'
                         ];
+
+                        // Count the number of visited countries
+                        const countryCount = visitedCountries.length;
+
+                        // Update the captions with the country count
+                        const captions = document.querySelectorAll('.map-caption');
+                        captions.forEach(caption => {
+                            if (caption.textContent.includes("There are currently")) {
+                                caption.textContent = `Highlighted regions represent the coffee origins I've had the pleasure of tasting so far in my coffee journey. There are currently ${countryCount} countries highlighted. Can you find them all?`;
+                            }
+                        });
 
                         const svg = d3.select('#world-map')
                             .append('svg')
