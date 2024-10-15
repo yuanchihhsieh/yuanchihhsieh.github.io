@@ -305,12 +305,12 @@
                 <div class="coffee-map">
                     <h3>Coffee Regions I've Explored</h3>
                     <img src="img/coffee.png" alt="Map of coffee regions I have tasted" class="coffee-map-image">
-                    <p class="map-caption">Highlighted regions represent the coffee origins I've had the pleasure of tasting so far in my coffee journey. There are currently X countries highlighted. Can you find them all?</p>
+                    <p class="map-caption">Highlighted regions represent the coffee origins I've had the pleasure of tasting so far in my coffee journey. There are currently <span id="country-count">X</span> countries highlighted. Can you find them all?</p>
                 </div>
             <div class="world-map-section">
                 <h3>Coffee Regions I've Explored</h3>
                 <div id="world-map"></div>
-                <p class="map-caption">Highlighted regions represent the coffee origins I've had the pleasure of tasting so far in my coffee journey. There are currently X countries highlighted. Can you find them all?</p>
+                <p class="map-caption">Highlighted regions represent the coffee origins I've had the pleasure of tasting so far in my coffee journey. There are currently <span id="country-count">X</span> countries highlighted. Can you find them all?</p>
             </div>
 
             <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -321,6 +321,49 @@
                     const coffeeMap = document.querySelector('.coffee-map');
                     const minWidthForInteractiveMap = 768;
                     let mapRendered = false;
+
+                    // Add this function to update the country count
+                    function updateCountryCount() {
+                        const visitedCountries = [
+                            'Brazil',
+                            'Vietnam',
+                            'Colombia',
+                            'Indonesia',
+                            'Ethiopia',
+                            'Honduras',
+                            'Mexico',
+                            'Peru',
+                            'Guatemala',
+                            'Nicaragua',
+                            'Costa Rica',
+                            'Tanzania',
+                            'Kenya',
+                            'Burundi',
+                            'El Salvador',
+                            'Panama',
+                            'Bolivia',
+                            'Ecuador',
+                            'Dem. Rep. Congo',
+                            'Rwanda',
+                            'Timor-Leste',
+                            'Myanmar',
+                            'Taiwan'
+                        ];
+
+                        const countryCount = visitedCountries.length;
+
+                        // Update all elements with class 'country-count'
+                        const countElements = document.querySelectorAll('.country-count');
+                        countElements.forEach(el => {
+                            el.textContent = countryCount;
+                        });
+
+                        // Update both captions
+                        const captions = document.querySelectorAll('.map-caption');
+                        captions.forEach(caption => {
+                            caption.innerHTML = `Highlighted regions represent the coffee origins I've had the pleasure of tasting so far in my coffee journey. There are currently <span class="country-count">${countryCount}</span> countries highlighted. Can you find them all?`;
+                        });
+                    }
 
                     function checkScreenSize() {
                         if (window.innerWidth >= minWidthForInteractiveMap) {
@@ -334,6 +377,8 @@
                             worldMapSection.style.display = 'none';
                             coffeeMap.style.display = 'block';
                         }
+                        // Always update the country count
+                        updateCountryCount();
                     }
 
                     function renderWorldMap() {
@@ -373,12 +418,13 @@
                         // Count the number of visited countries
                         const countryCount = visitedCountries.length;
 
-                        // Update the captions with the country count
+                        // Update the country count in the caption
+                        document.getElementById('country-count').textContent = countryCount;
+
+                        // Update both captions (for the static image and the interactive map)
                         const captions = document.querySelectorAll('.map-caption');
                         captions.forEach(caption => {
-                            if (caption.textContent.includes("There are currently")) {
-                                caption.textContent = `Highlighted regions represent the coffee origins I've had the pleasure of tasting so far in my coffee journey. There are currently ${countryCount} countries highlighted. Can you find them all?`;
-                            }
+                            caption.innerHTML = `Highlighted regions represent the coffee origins I've had the pleasure of tasting so far in my coffee journey. There are currently <span class="country-count">${countryCount}</span> countries highlighted. Can you find them all?`;
                         });
 
                         const svg = d3.select('#world-map')
