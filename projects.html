@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Under Construction</title>
+    <title>Projects - Yuan-Chih Hsieh</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
     <style>
@@ -90,6 +90,38 @@
             line-height: 1;
             font-size: 1.5em;
         }
+        .project-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Create two equal columns */
+            gap: 2rem;
+        }
+        .project-card {
+            max-width: 400px; /* Set a maximum width for the cards */
+            width: 100%; /* Allow cards to take full width up to the max */
+            background-color: #f0f0f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .project-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .project-card p {
+            margin-bottom: 1rem;
+            color: #666;
+            text-align: left; /* Align text to the left */
+        }
+        .project-card a {
+            color: #0066cc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .project-card a:hover {
+            color: #004080;
+            text-decoration: underline;
+        }
         
         @media (max-width: 768px) {
             .nav-toggle {
@@ -118,6 +150,12 @@
                 display: block;
                 padding: 10px 0;
             }
+            .project-cards {
+                grid-template-columns: 1fr; /* Change to one column for smaller screens */
+            }
+            .project-card {
+                width: 100%; /* Set width to 100% for smaller screens */
+            }
         }
     </style>
 </head>
@@ -139,25 +177,25 @@
         </nav>
     </header>
     <div class="container">
-        <div class="content">
-            <h1>Oops! Page Under Construction</h1>
-            <div class="emoji">🚧📚👨🏻‍💻</div>
-            <p>As a PhD student, I currently don't have time to finish this page...</p>
-            <p>I'm probably busy with:</p>
-            <ul style="text-align: left; display: inline-block;">
-                <li>Debugging code that worked yesterday</li>
-                <li>Negotiating with LaTeX to format my paper</li>
-                <li>Staring at incomprehensible math equations</li>
-                <li>Convincing myself that coffee is a food group</li>
-            </ul>
-            <p class="vertical-ellipsis">
-                <span>.</span><br>
-                <span>.</span><br>
-                <span>.</span>
-            </p>
-            <p>I'll finish this page the next time I procrastinate on my research...</p>
-            <p>Check back later — it might just magically be completed!</p>
-            <p class="footnote">* No promises. Procrastination schedule is subject to change without notice.</p>
+        <div class="project-cards">
+            <div class="project-card">
+                <h2>Connect Four</h2>
+                <p>A two-player connection game where players take turns dropping colored discs into a grid. The first to connect four discs in a row wins!</p>
+                <a href="connect4.html">View Project</a>
+            </div>
+            <!-- <div class="project-card">
+                <h2>Lorenz Attractor Simulation</h2>
+                <p>A visual simulation of the Lorenz attractor, demonstrating chaotic behavior in dynamical systems.</p>
+                <a href="lorenz.html">View Project</a>
+            </div> -->
+            
+            <div class="project-card">
+                <h2>More to come...</h2>
+                <p style="text-align: center;">Stay tuned for new updates!</p>
+                <p style="font-size: 0.8rem; margin-top: 2rem; font-style: italic; text-align: center;">
+                    * Still no promises on this... unless you count promises to procrastinate!
+                </p>
+            </div>
         </div>
     </div>
     <script>
