@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const beta = 8/3;
     const dt = 0.01;
 
+
     // Initial conditions for the points
     const initialPoints = [
         { x: -11, y: -8, z: 33, color: 'rgba(0, 0, 0, 0.7)' },
