@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>whoami</title>
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #fff; /* Light background */
+            color: #000; /* Dark text */
+            margin: 0;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: #333; /* Darker title color */
+        }
+
+        .button {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            background: #f0f0f0; /* Light button background */
+            color: #000; /* Dark text for buttons */
+            border: 2px solid #ccc; /* Light border */
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px;
+            width: 200px; /* Fixed width for buttons */
+        }
+
+        .button:hover {
+            background: #e0e0e0; /* Slightly darker on hover */
+            transform: translateY(-2px);
+        }
+
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 500px; /* Limit the width of the button container */
+            margin: 0 auto; /* Center the button container */
+        }
+
+        .card {
+            display: none;
+            background: #f9f9f9; /* Light card background */
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid #ccc; /* Light border for cards */
+            position: fixed; /* Position fixed for pop-out effect */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000; /* Ensure it appears above other content */
+            width: 350px; /* Increased width for the card */
+            height: 450px; /* Increased height for the card */
+            overflow: auto; /* Enable scrolling for overflowing content */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+            font-size: 0.9rem; /* Adjust font size for better readability */
+        }
+
+        .card h2 {
+            font-size: 1.5rem; /* Increase heading size */
+            margin-bottom: 1rem; /* Space below heading */
+            color: #333; /* Darker heading color */
+        }
+
+        .card h3 {
+            font-size: 1.2rem; /* Subheading size */
+            margin-top: 1rem; /* Space above subheading */
+            margin-bottom: 0.5rem; /* Space below subheading */
+            color: #555; /* Slightly lighter color for subheadings */
+        }
+
+        .card p {
+            margin-bottom: 0.5rem; /* Space between paragraphs */
+            line-height: 1.5; /* Improve line height for readability */
+            color: #666; /* Darker text for paragraphs */
+            text-align: left; /* Align text to the left */
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: #000;
+            font-size: 1.2rem;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .overlay {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            z-index: 999; /* Ensure it appears above other content */
+        }
+    </style>
+</head>
+<body>
+    <h1>Who am I?</h1>
+    <div class="button-container">
+        <button class="button" onclick="showCard(1)">&#x2460;</button>
+        <button class="button" onclick="showCard(2)">&#x2461;</button>
+        <button class="button" onclick="showCard(3)">&#x2462;</button>
+        <button class="button" onclick="showCard(4)">&#x2463;</button>
+        <button class="button" onclick="showCard(5)">&#x2464;</button>
+        <button class="button" onclick="showCard(6)">&#x2465;</button>
+    </div>
+
+    <div id="overlay" class="overlay" onclick="closeCard()"></div>
+
+    <div id="card1" class="card">
+        <button class="close-btn" onclick="closeCard()">X</button>
+        <a href="https://www.blackwhiteroasters.com/products/r-finca-deborah-nirvana" target="_blank">
+            <h2>[Black and White] Finca Deborah Nirvana</h2>
+        </a>
+        <img src="img/nirvana.png" alt="Nirvana" style="width:100%; height:auto;">
+        <p><span style="color: red;">(2024 WBC #2 Jack Simpson, Australia)</span></p>
+        <p>Origin: Volcán, Chiriqui, Panama</p>
+        <p>Producer: Jamison Savage</p>
+        <p>Farm: Finca Deborah</p>
+        <p>Process: Nirvana (Nitrogen Maceration)</p>
+        <p>Variety: Green Tip Gesha</p>
+        <p>Elevation: 1950 masl</p>
+        <h3>MEET THE PRODUCER</h3>
+        <p>Over a decade ago, Jamison Savage left the United States and his career in finance to pursue specialty coffee production in the Panamanian forest. That genuine leap of faith has certainly paid off, due in large part to Jamison's relentless pursuit of excellence and insistence on innovation. Since 2016, coffees from Finca Deborah have featured prominently on the World Barista stage, with all three of the top spots this year going to competitors who used one of Jamison's coffees - and this coffee in particular took second. Today, Jamison is considered one of the most prolific coffee producers in the world - and one sip of this uniquely processed Gesha lot will likely have you nodding your head in quiet agreement.</p>
+
+        <h3>WHAT MAKES IT SPECIAL</h3>
+        <p>Finca Deborah sits at 1900 meters above sea level, making it one of the highest-altitude farms in the Volcán region of Panama. The Gesha trees grown here seamlessly integrate into the surrounding cloud forest. The ecosystem has a consistently high humidity while temperatures at night can cool dramatically. These lower temperatures slow the maturation of the coffee cherry and drive more sugars out of the tree and into the cherry, making for a more complex and sweet cup. The farming operation coexists with this ecosystem by not applying any pesticides or other chemicals which could interrupt the diverse and often rare wildlife that call the area home. Additionally, all picking is done by hand and the processing operation is powered by on-site solar energy production.</p>
+
+        <h3>TRUST THE PROCESS</h3>
+        <p>Similar to carbonic maceration, Jamison's Nirvana process utilizes gas injection into a pressurized chamber - in his case, nitrogen. After being picked at peak ripeness, the coffee cherries are de-pulped and then loaded into sealed stainless steel tanks. There, nitrogen is injected into the fermentation environment, which serves to intensify both aromatics and flavor in the resultant cup of coffee. The lot is then dried as a natural until optimal moisture content is achieved.</p>
+
+        <h3>TAKE A SIP</h3>
+        <p>When hot, everything about this coffee is big: big florals, big passionfruit, big red fruits, and big, vibrant acidity (like bergamot). It is most similar to red wine at this temperature, showcasing a lovely - and illusive - grape note.</p>
+        <p>As the coffee approaches a pleasantly warm temperature, it becomes more intensely floral and more tropical in character, with passionfruit and mango taking center stage. It's balanced and juicy in texture at this temperature. Fresh citrus, like bergamot, prevails.</p>
+        <p>When cool, the coffee becomes more apparently Gesha in character. The citrus intensifies and stone fruits emerge at this temperature, like fresh cherries. An abundance of berries - strawberries, raspberries, and cranberries - are present here, but the cup profile as a whole is cleaner and more tropical at this temperature than at other intervals. It's sweeter here, too, with dark honey and maple contributing to a remarkably long finish.</p>
+        <p>The coffee makes some huge strides from hot to cold. But at every temperature, it's one of the most intensely flavorful coffees we've ever cupped that isn't a co-ferment. It's easy to see why Jack Simpson was so drawn to this coffee when choosing one for his WBC run this year - and equally unsurprising that he ended up placing second in the world while serving it.</p>
+    </div>
+    <div id="card2" class="card">
+        <button class="close-btn" onclick="closeCard()">X</button>
+        <a href="https://www.blackwhiteroasters.com/products/r-arturo-paz-honduras-coe-7" target="_blank">
+            <h2>[Black and White] Arturo Paz - Honduras COE #7</h2>
+        </a>
+        <img src="img/arturo.png" alt="Arturo Paz" style="width:100%; height:auto;">
+
+        <p>Origin: Santa Barbara, Honduras</p>
+        <p>Producer: Angel Arturo Paz</p>
+        <p>Farm: El Itacayo</p>
+        <p>Process: Washed</p>
+        <p>Variety: Gesha</p>
+        <p>Elevation: 1550-1730 masl</p>
+        <h3>MEET THE PRODUCER</h3>
+        <p>In specialty coffee circles, the Paz family in Honduras likely needs no introduction. Our buddy, Benjamin Paz, is likely the most familiar to you - he's been featured on the Black & White menu numerous times over the years. Outgoing and gregarious, you might think that Ben is the sole star of his family's dry mill and export company in Santa Barbara, San Vicente Coffee Exporters. But actually, there's a quieter, shyer unsung hero of the family business as well: his name is Angel Arturo Paz, and he took 7th place in the Honduras Cup of Excellence this year.</p>
+
+        <p>A third generation coffee producer himself, Angel is quiet, charming, and very devoted to his large extended family. He and Benjamin started formally working together in 2012, when they began cultivating coffee on small plots of farmland in a very rural part of Santa Barbara. Today, Angel serves as the chief of quality control at San Vicente, and he continues to participate (and thrive!) in COE, with which he's been involved since its inception.</p>
+
+        <h3>TRUST THE PROCESS</h3>
+        <p>This lot underwent traditional Honduran Washed processing protocols. The result is a straight over-the-plate, very low-fermentation impact Gesha lot, and honestly, it couldn't be lovelier.</p>
+
+        <h3>TAKE A SIP</h3>
+        <p>When hot, this coffee makes sure you know it's a Gesha straightaway. The aroma is sweet and heavily floral, reminding us of bergamot and jasmine. Delicate stone fruit, like peaches, and citrus fruits, like oranges and lemons, are readily apparent. The sweetness is almost confectionary here, reminding us of vanilla pound cake.</p>
+
+        <p>As the coffee approaches a pleasantly warm temperature, acidity increases and the texture becomes more rounded. All those Gesha characteristics still shine, with the addition of more (dried) stone fruits this time - like peaches, plums, and cherries. We enjoy this coffee top to bottom, but it's particularly incredible at this temperature.</p>
+
+        <p>When cool, acidity peaks as the whole tasting experience becomes more citric and tropical. The texture softens to silky and the florality lingers, reminding us of sipping white tea.</p>
+    </div>
+    <div id="card3" class="card">
+        <button class="close-btn" onclick="closeCard()">X</button>
+        <a href="https://manhattan.coffee/catalog/coffee/edelweiss-4" target="_blank">
+            <h2>[Manhattan] Edelweiss Geisha</h2>
+        </a>
+        <img src="img/edelweiss.jpg" alt="Edelweiss Geisha" style="width:100%; height:auto;">
+        <p>Origin: Arusha, Tanzania</p>
+        <p>Producer: Neel Vohora</p>
+        <p>Farm: Finagro</p>
+        <p>Process: Washed</p>
+        <p>Variety: Geisha</p>
+        <p>Elevation: 1650-1800 masl</p>
+        <h3>Description</h3>
+        <p>Edelweiss Geisha!</p>
+        <p>Last year we got our hands on the first harvest of Geisha from Neel and team in Finagro, Tanzania. Similar to the SL-28, the Geisha was also processed as a natural last year and this year making the decision to go for a washed process. In our opinion, the results turned out excellent and we just can't get enough!</p>
+        <p>Tasting like strawberry, blueberry and elderflower - its everything you would expect out of a washed Geisha from Tanzania!</p>
+    </div>
+    <div id="card4" class="card">
+        <button class="close-btn" onclick="closeCard()">X</button>
+        <a href="https://manhattancoffeeroasters.com/product/coffees/competition/ivan-solis-coe1/?v=0b3b97fa6688" target="_blank">
+            <h2>[Manhattan] Ivan Solis - Costa Rica COE #1</h2>
+        </a>
+        <img src="img/ivansolis.png" alt="Ivan Solis" style="width:100%; height:auto;">
+        <p>Origin: Dota Tarrazu, Costa Rica</p>
+        <p>Producer: Ivan Solis</p>
+        <p>Farm: Finca Carrizal</p>
+        <p>Process: Natural <span style="color: red;">(COE treats as EXPERIMENTAL)</span></p>
+        <p>Variety: Red Catuai</p>
+        <p>Elevation: 1800 masl</p>
+        <h3>Description</h3>
+        <p>A new coffee from one of our favorite producers in Costa Rica, Ivan Solis!</p>
+        <p>As you probably can tell from the name of one of this - we were able to lock down the lot of this Red Catuai that won the COE in Costa Rica! We are really excited to offer as both filter and espresso roast!</p>
+        <p>For this COE winning lot we tasted red licorice, cola and rock candy!</p>
+    </div>
+    <div id="card5" class="card">
+        <button class="close-btn" onclick="closeCard()">X</button>
+        <h2>The Hidden Library</h2>
+        <p>A secret collection of books containing knowledge that was never meant to be found.</p>
+    </div>
+    <div id="card6" class="card">
+        <button class="close-btn" onclick="closeCard()">X</button>
+        <h2>The Quantum Mirror</h2>
+        <p>A mirror that shows reflections of alternate realities, discovered in an abandoned research facility.</p>
+    </div>
+
+    <script>
+        function showCard(cardNumber) {
+            // Confirm if the user wants to reveal the answer for the specific card number
+            const confirmReveal = confirm("Do you want to reveal the answer for #" + cardNumber + "?");
+            if (confirmReveal) {
+                // Hide all cards
+                const cards = document.querySelectorAll('.card');
+                cards.forEach(card => card.style.display = 'none');
+
+                // Show the selected card
+                const selectedCard = document.getElementById('card' + cardNumber);
+                selectedCard.style.display = 'block';
+            }
+        }
+
+        function closeCard() {
+            // Hide all cards
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => card.style.display = 'none');
+
+            // Hide overlay
+            document.getElementById('overlay').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
