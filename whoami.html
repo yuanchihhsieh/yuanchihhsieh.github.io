@@ -107,10 +107,81 @@
             background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
             z-index: 999; /* Ensure it appears above other content */
         }
+
+        .main-card {
+            background: #f9f9f9; /* Light card background */
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 0 auto 3rem auto; /* Centered with margin below */
+            border: 1px solid #ccc;
+            width: 70%; /* Wider than regular cards */
+            max-width: 700px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .main-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .main-card h3 {
+            font-size: 1.4rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: #444;
+        }
+
+        .main-card p {
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
+            color: #555;
+            font-size: 1.1rem;
+            text-align: left;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+        }
+
+        .card-content {
+            padding: 0.5rem;
+        }
+
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            color: #000;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <h1>Who am I?</h1>
+
+    <div id="mainCard" class="main-card">
+        <div class="card-header">
+            <a href="https://www.seycoffee.com/collections/coffee/products/2025-mbature-family-kamavindi-estate-field-blend-kenya" target="_blank">
+                <h2>[SEY] Mbature Family - Kamavindi Estate Field Blend</h2>
+            </a>
+            <button id="toggleButton" class="toggle-btn" onclick="toggleCard()">▲</button>
+        </div>
+        <div id="cardContent" class="card-content">
+            <img src="img/kamavindi.png" alt="Kamavindi" style="width:80%; height:auto; margin-bottom:20px;">
+            <p>Origins: Kenya</p>
+            <p>Process: Washed</p>
+            <p>Varieties: SL28, SL34, Ruiru 11, & Batian </p>
+            <p>Elevation: 1680 masl</p>
+            <h3>Description</h3>
+            <p>This single-estate selection comes from the Mbature family on the southeastern slopes of Mt. Kenya in Embu County. Working with their coffee is an honor—their dedication to quality is truly inspiring. In the cup we find dark fruits, pink grapefruit, and a rich, jam-like sweetness.</p>
+            <p>Harvested at peak ripeness. Hand-sorted and floated to further remove defects. Depulped on the day of harvest. Mixed to ensure uniform distribution. Dry fermented for 18-20 hours in darkness. Washed and turned repeatedly in fresh water until the post-washing water remains clean. Dry fermented for an additional 24 hours. Washed again, then floated through channels to sort by density and remove any remaining defects. Dried on raised beds under shade nets until moisture content reaches 16%, then moved to upper beds to finish drying to ~10.5%.</p>
+        </div>
+    </div>
+
     <div class="button-container">
         <button class="button" onclick="showCard(1)">&#x2460;</button>
         <button class="button" onclick="showCard(2)">&#x2461;</button>
@@ -249,6 +320,13 @@
     </div>
 
     <script>
+        // Initialize card state on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Make sure the card starts expanded
+            const cardContent = document.getElementById('cardContent');
+            cardContent.style.display = 'block';
+        });
+        
         function showCard(cardNumber) {
             // Confirm if the user wants to reveal the answer for the specific card number
             const confirmReveal = confirm("Do you want to reveal the answer for #" + cardNumber + "?");
@@ -270,6 +348,19 @@
 
             // Hide overlay
             document.getElementById('overlay').style.display = 'none';
+        }
+
+        function toggleCard() {
+            const cardContent = document.getElementById('cardContent');
+            const toggleButton = document.getElementById('toggleButton');
+            
+            if (cardContent.style.display === 'none') {
+                cardContent.style.display = 'block';
+                toggleButton.textContent = '▲';
+            } else {
+                cardContent.style.display = 'none';
+                toggleButton.textContent = '▼';
+            }
         }
     </script>
 </body>
