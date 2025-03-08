@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FT99HW58XX"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FT99HW58XX');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boundary Value Problem (BVP) Solver - Yuan-Chih Hsieh</title>
@@ -82,6 +91,11 @@
             padding: 2px 4px;
             border-radius: 4px;
         }
+        .equation {
+            overflow-x: auto; /* Allow horizontal scrolling if needed */
+            text-align: center; /* Center the equation */
+            margin: 1rem 0; /* Add margin for spacing */
+        }
     </style>
 </head>
 <body>
@@ -104,57 +118,69 @@
     <div class="container">
         <div class="content">
             <h1>Boundary Value Problem (BVP) Solver</h1>
-            <p>This project addresses a 2D boundary value problem defined on a square domain with two removed circular areas. The solution is obtained using finite element methods (FEM), which involves triangulating the domain and computing the stiffness matrix.</p>
+            <p>This project addresses a 2D boundary value problem defined on a square domain with two removed circular areas. The solution is obtained using finite element methods (FEM), which involves triangulating the domain and computing the stiffness matrix. The BVP is defined as follows:</p>
             
-            <h2>Problem Statement</h2>
-            <p>The BVP is defined as follows:</p>
-            <p>
-                \[
-                \nabla \cdot \left( e^{-\beta(x,y)} M(x,y) \nabla u \right) = 0, \quad (x,y) \in \Omega
-                \]
-            </p>
-            <p>
-                \[
-                \frac{\partial u}{\partial n} = 0, \quad u \in \Gamma_N
-                \]
-            </p>
-            <p>
-                \[
-                u(\partial A) = 0, \quad u(\partial B) = 1
-                \]
-            </p>
+            <!-- <h2>Problem Statement</h2>
+            <p>The BVP is defined as follows:</p> -->
+            <div class="equation">
+                <p>
+                    \[
+                    \nabla \cdot \left( e^{-\beta(x,y)} M(x,y) \nabla u \right) = 0, \quad (x,y) \in \Omega
+                    \]
+                </p>
+            </div>
+            <div class="equation">
+                <p>
+                    \[
+                    \frac{\partial u}{\partial n} = 0, \quad u \in \Gamma_N
+                    \]
+                </p>
+            </div>
+            <div class="equation">
+                <p>
+                    \[
+                    u(\partial A) = 0, \quad u(\partial B) = 1
+                    \]
+                </p>
+            </div>
 
             <h2>Integral Equation Formulation</h2>
-            <p>To get the integral equation formulation for this Boundary Value Problem, I applied the Green’s Identity and followed similar steps in the lecture notes. I have also used the knowledge from S. Larsson (2009), Partial Differential Equations with Numerical Methods.</p>
-            <p>
-                \[
-                \int_{\Omega} \nabla u e^{-\beta(x,y)} M(x,y) \nabla u \cdot dx = 0
-                \]
-            </p>
+            <p>To get the integral equation formulation for this Boundary Value Problem, I applied the Green's Identity and followed similar steps in the lecture notes. I have also used the knowledge from S. Larsson (2009), Partial Differential Equations with Numerical Methods.</p>
+            <div class="equation">
+                <p>
+                    \[
+                    \int_{\Omega} \nabla u e^{-\beta(x,y)} M(x,y) \nabla u \cdot dx = 0
+                    \]
+                </p>
+            </div>
             <p>Let \( u = v + u_D \) where \( v \) is the free nodes, and \( u_D \) are nodes on the boundary.</p>
-            <p>
-                \[
-                \int_{\Omega} e^{-\beta(x,y)} M(x,y) \nabla u \cdot \nabla v \cdot dx + \int_{\Omega} e^{-\beta(x,y)} M(x,y) \nabla v \cdot u_D \cdot dx = 0
-                \]
-            </p>
+            <div class="equation">
+                <p>
+                    \[
+                    \int_{\Omega} e^{-\beta(x,y)} M(x,y) \nabla u \cdot \nabla v \cdot dx + \int_{\Omega} e^{-\beta(x,y)} M(x,y) \nabla v \cdot u_D \cdot dx = 0
+                    \]
+                </p>
+            </div>
 
             <h2>Domain Description</h2>
             <p>The domain Ω is the square \([-1, 1]^2\) with two removed circles A and B of radii 0.2 centered at \((-0.5, -0.1\sin(0.5\pi))\) and \((0.5, 0.1\sin(0.5\pi))\), respectively.</p>
-            
+
             <h2>Triangulation Result</h2>
-            <p>Using the <code>distmesh.py</code> module, I have created the triangulation plot for the domain \([-1, 1]^2\) in below (Figure 1).</p>
+            <p>Using the module for discritization of trianglation mesh, I have created the triangulation plot for the domain \([-1, 1]^2\) in below (Figure 1).</p>
             <div class="image-container">
                 <img src="img/fem_tri.png" alt="FEM Triangulation">
                 <p class="caption">Figure 1: Triangulation plot for the domain \([-1, 1]^2\). In total, there are 1909 number of points, and 3582 number of triangles.</p>
             </div>
 
             <h2>Methodology</h2>
-            <p>To solve this equation, it is required to handle two extra terms: one is the scalar function \( V(x, y) \), and the other is the matrix function \( M(x, y) \). The scalar term is easier to deal with, where we need to multiply the result of the stiffness by a scalar, which is similar to what was done in assignment 8. If we ignore the matrix term, we will get a result like the following (Figure 8). Dealing with the matrix term is in a different approach; I handled the matrix term in the stiffness matrix.</p>
-            <p>
-                \[
-                \text{stima} = \frac{|T|}{2} \cdot G \cdot M(x, y) \cdot G^T
-                \]
-            </p>
+            <p>To solve this equation, it is required to handle two extra terms: one is the scalar function \( V(x, y) \), and the other is the matrix function \( M(x, y) \). The scalar term is easier to deal with, where we need to multiply the result of the stiffness by a scalar, which is similar to what was done in assignment 8. If we ignore the matrix term, we will get a result like the following (Figure 2). Dealing with the matrix term is in a different approach; I handled the matrix term in the stiffness matrix.</p>
+            <div class="equation">
+                <p>
+                    \[
+                    \text{stima} = \frac{|T|}{2} \cdot G \cdot M(x, y) \cdot G^T
+                    \]
+                </p>
+            </div>
             <p>After applying the term, the result pattern kind of shifts depending on the positions of \( x \) and \( y \) (Figure 3).</p>
 
             <h2>Final Result</h2>
