@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boundary Value Problem (BVP) Solver - Yuan-Chih Hsieh</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Courier New', monospace; /* Match the font from about.html */
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Prevent horizontal overflow */
+        }
+        header {
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            position: relative;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .content {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        h2 {
+            color: #0066cc;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        p {
+            color: #555;
+            line-height: 1.6;
+        }
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center images horizontally */
+            margin: 1rem 0; /* Add margin for spacing */
+        }
+        img {
+            border-radius: 8px;
+            max-width: 100%; /* Ensure images are responsive */
+            height: auto;
+        }
+        .caption {
+            font-size: 0.9em;
+            color: #666;
+            text-align: center;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        pre {
+            background-color: #f0f0f0;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap; /* Prevent horizontal overflow */
+            word-wrap: break-word; /* Break long words */
+        }
+        code {
+            font-family: 'Courier New', monospace;
+            background-color: #e8e8e8;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="unavailable.html">Publications</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="teaching.html">Teaching</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="content">
+            <h1>Boundary Value Problem (BVP) Solver</h1>
+            <p>This project addresses a 2D boundary value problem defined on a square domain with two removed circular areas. The solution is obtained using finite element methods (FEM), which involves triangulating the domain and computing the stiffness matrix.</p>
+            
+            <h2>Problem Statement</h2>
+            <p>The BVP is defined as follows:</p>
+            <p>
+                \[
+                \nabla \cdot \left( e^{-\beta(x,y)} M(x,y) \nabla u \right) = 0, \quad (x,y) \in \Omega
+                \]
+            </p>
+            <p>
+                \[
+                \frac{\partial u}{\partial n} = 0, \quad u \in \Gamma_N
+                \]
+            </p>
+            <p>
+                \[
+                u(\partial A) = 0, \quad u(\partial B) = 1
+                \]
+            </p>
+
+            <h2>Integral Equation Formulation</h2>
+            <p>To get the integral equation formulation for this Boundary Value Problem, I applied the Green’s Identity and followed similar steps in the lecture notes. I have also used the knowledge from S. Larsson (2009), Partial Differential Equations with Numerical Methods.</p>
+            <p>
+                \[
+                \int_{\Omega} \nabla u e^{-\beta(x,y)} M(x,y) \nabla u \cdot dx = 0
+                \]
+            </p>
+            <p>Let \( u = v + u_D \) where \( v \) is the free nodes, and \( u_D \) are nodes on the boundary.</p>
+            <p>
+                \[
+                \int_{\Omega} e^{-\beta(x,y)} M(x,y) \nabla u \cdot \nabla v \cdot dx + \int_{\Omega} e^{-\beta(x,y)} M(x,y) \nabla v \cdot u_D \cdot dx = 0
+                \]
+            </p>
+
+            <h2>Domain Description</h2>
+            <p>The domain Ω is the square \([-1, 1]^2\) with two removed circles A and B of radii 0.2 centered at \((-0.5, -0.1\sin(0.5\pi))\) and \((0.5, 0.1\sin(0.5\pi))\), respectively.</p>
+            
+            <h2>Triangulation Result</h2>
+            <p>Using the <code>distmesh.py</code> module, I have created the triangulation plot for the domain \([-1, 1]^2\) in below (Figure 1).</p>
+            <div class="image-container">
+                <img src="img/fem_tri.png" alt="FEM Triangulation">
+                <p class="caption">Figure 1: Triangulation plot for the domain \([-1, 1]^2\). In total, there are 1909 number of points, and 3582 number of triangles.</p>
+            </div>
+
+            <h2>Methodology</h2>
+            <p>To solve this equation, it is required to handle two extra terms: one is the scalar function \( V(x, y) \), and the other is the matrix function \( M(x, y) \). The scalar term is easier to deal with, where we need to multiply the result of the stiffness by a scalar, which is similar to what was done in assignment 8. If we ignore the matrix term, we will get a result like the following (Figure 8). Dealing with the matrix term is in a different approach; I handled the matrix term in the stiffness matrix.</p>
+            <p>
+                \[
+                \text{stima} = \frac{|T|}{2} \cdot G \cdot M(x, y) \cdot G^T
+                \]
+            </p>
+            <p>After applying the term, the result pattern kind of shifts depending on the positions of \( x \) and \( y \) (Figure 3).</p>
+
+            <h2>Final Result</h2>
+            <p>Below is the final result of the BVP solution:</p>
+            <div class="image-container">
+                <img src="img/fem_res.png" alt="FEM Result">
+                <p class="caption">Figure 2: The solution of finite elements after introducing the matrix term.</p>
+            </div>
+            <div class="image-container">
+                <img src="img/fem_res_f.png" alt="FEM Result no shift">
+                <p class="caption">Figure 3: The solution of finite elements when ignoring the matrix term.</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const navToggle = document.querySelector('.nav-toggle');
+            const nav = document.querySelector('nav');
+
+            navToggle.addEventListener('click', () => {
+                nav.classList.toggle('active');
+            });
+
+            // Close menu when a link is clicked
+            const navLinks = document.querySelectorAll('nav ul li a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    nav.classList.remove('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
