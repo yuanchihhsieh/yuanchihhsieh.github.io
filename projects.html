@@ -123,6 +123,9 @@
             text-align: left; /* Align text to the left */
         }
         .project-card a {
+            display: inline-block;
+            width: auto;
+            margin-left: 0;
             color: #0066cc;
             text-decoration: none;
             transition: color 0.3s ease;
@@ -130,6 +133,9 @@
         .project-card a:hover {
             color: #004080;
             text-decoration: underline;
+        }
+        .view-project-button {
+            margin-bottom: 0.5rem; /* Add margin to the bottom */
         }
         
         @media (max-width: 768px) {
@@ -197,7 +203,12 @@
             <div class="project-card">
                 <h2>Boundary Value Problem (BVP) Solver</h2>
                 <p>A project focused on solving a 2D boundary value problem using finite element methods (FEM). The project includes triangulation of the domain and computation of the stiffness matrix.</p>
-                <a href="bvp_fem.html">View Project</a>
+                <a href="bvp_fem.html" class="view-project-button">View Project</a>
+            </div>
+            <div class="project-card">
+                <h2>Spring System Optimization</h2>
+                <p>A project aimed at optimizing the spring system of a robotic arm to enhance its performance and precision, resulting in smoother movements. It focuses on applying advanced optimization techniques to improve functionality.</p>
+                <a href="spring_system.html" class="view-project-button">View Project</a>
             </div>
             <!-- <div class="project-card">
                 <h2>Lorenz Attractor Simulation</h2>
