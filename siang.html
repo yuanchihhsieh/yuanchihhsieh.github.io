@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FT99HW58XX"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FT99HW58XX');
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Bean Challenge</title>
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #fff;
+            color: #000;
+            margin: 0;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: #333;
+        }
+
+        .button {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            background: #f0f0f0;
+            color: #000;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px;
+            width: 200px;
+        }
+
+        .button:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .group-button {
+            padding: 1.5rem 2.5rem;
+            font-size: 1.3rem;
+            background: #f5f5f5;
+            color: #333;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+            width: 250px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .group-button:hover {
+            background: #e0e0e0;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .button-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            justify-content: center;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+
+        .card {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-card {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            width: 90%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+
+        .question-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .question-card p {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 12px;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            box-sizing: border-box;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 12px;
+            padding-right: 30px;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #2196F3;
+            box-shadow: 0 0 5px rgba(33, 150, 243, 0.3);
+        }
+
+        .submit-btn {
+            padding: 0.8rem 1.5rem;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            background: #45a049;
+        }
+
+        .result-card {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .result-card h2 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .correct {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .incorrect {
+            color: #f44336;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .back-btn {
+            padding: 0.8rem 1.5rem;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            margin-top: 1rem;
+        }
+
+        .back-btn:hover {
+            background: #0b7dda;
+        }
+
+        .back-to-landing {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 0.5rem 1rem;
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .back-to-landing:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .score-display {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .intro-card {
+            background: #f9f9f9;
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 0 auto 3rem auto;
+            border: 1px solid #ccc;
+            width: 70%;
+            max-width: 700px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .intro-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .intro-card p {
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
+            color: #555;
+            font-size: 1.1rem;
+            text-align: left;
+        }
+
+        @media (max-width: 650px) {
+            .button-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .group-button {
+                width: 100%;
+                max-width: 300px;
+                margin: 10px auto;
+            }
+        }
+
+        .coffee-links {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .coffee-links h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .coffee-links a {
+            display: block;
+            color: #2196F3;
+            text-decoration: none;
+            padding: 0.5rem 0;
+            text-align: left;
+            transition: color 0.3s ease;
+        }
+
+        .coffee-links a:hover {
+            color: #0b7dda;
+            text-decoration: underline;
+        }
+
+        .coffee-links a.unavailable {
+            color: #999;
+            cursor: not-allowed;
+            text-decoration: none;
+            pointer-events: none;
+        }
+
+        .coffee-links .unavailable-text {
+            color: #f44336;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .answer-input {
+                font-size: 16px;
+                padding: 15px;
+                margin: 1rem 0;
+            }
+
+            .question-card {
+                padding: 1rem;
+                margin: 15px auto;
+                width: 95%;
+            }
+
+            .question-card h3 {
+                font-size: 1.1rem;
+            }
+
+            .question-card p {
+                font-size: 0.95rem;
+            }
+        }
+
+        @supports (-webkit-touch-callout: none) {
+            .answer-input {
+                font-size: 16px;
+                padding: 15px 35px 15px 15px;
+                line-height: 1.3;
+                height: auto;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            select, select:focus {
+                font-size: 16px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Coffee Bean Challenge</h1>
+
+    <button id="backButton" class="back-to-landing hidden" onclick="returnToLanding()">← Back to Home</button>
+
+    <div id="introCard" class="intro-card">
+        <h2>Welcome! Siang &#x263A</h2>
+        <p>This game will test your knowledge about different coffee beans and their characteristics.</p>
+        <p>Start with choosing one of the coffee bean groups, after enjoying them, feel free to answer the below questions for the corresponding group and see how much you know about coffee beans.</p>
+        <p>I hope you enjoy it!</p>
+    </div>
+
+    <div id="groupSelection" class="button-container">
+        <button class="group-button" onclick="selectGroup(1)">Group 1</button>
+        <button class="group-button" onclick="selectGroup(2)">Group 2</button>
+        <button class="group-button" onclick="selectGroup(3)">Group 3</button>
+        <button class="group-button" onclick="selectGroup(4)">Group 4</button>
+    </div>
+
+    <div id="questionContainer" class="hidden">
+        <!-- Questions will be dynamically loaded here -->
+    </div>
+
+    <div id="resultCard" class="result-card">
+        <h2>Your Results</h2>
+        <div id="scoreDisplay" class="score-display"></div>
+        <div id="resultDetails"></div>
+        <button class="back-btn" onclick="returnToGroups()">Try Another Group</button>
+    </div>
+
+    <script>
+        // Coffee bean questions and answers
+        const questions = {
+            1: [
+                {
+                    question: "What is the common characteristic of all coffees in Group 1?",
+                    answer: "Varietal",
+                    options: ["Country", "Varietal" ,"Processing Method"]
+                },
+                {
+                    question: "What is the characteristic that shared by coffee 1-1 and 1-2 but not 1-3?",
+                    answer: "Processing Method",
+                    options: ["Country", "Varietal" ,"Processing Method"]
+                },
+                {
+                    question: "What is the characteristic that shared by coffee 1-2 and 1-3 but not 1-1?",
+                    answer: "Country",
+                    options: ["Country", "Varietal" ,"Processing Method"]
+                },
+                {
+                    question: "What is the origin of coffee 1-2?",
+                    answer: "Taiwan",
+                    options: ["Colombia", "Taiwan", "Panama", "Ethiopia"]
+                },
+                {
+                    question: "What is the processing method of coffee 1-3?",
+                    answer: "Washed",
+                    options: ["Washed", "Natural", "Honey"]
+                }
+            ],
+            2: [
+                {
+                    question: "What is NOT the common characteristic of all coffees in Group 2?",
+                    answer: "Processing Method",
+                    options: ["Country", "Varietal" ,"Processing Method"]
+                },
+                {
+                    question: "What is the varietal of coffee 2-3?",
+                    answer: "74158",
+                    options: ["74110", "74112", "74158", "Ethiopia Heirloom"]
+                },
+                {
+                    question: "Are these coffees considered as high elevation coffees? (above 1600 masl)",
+                    answer: "Yes",
+                    options: ["Yes", "No"]
+                },
+                {
+                    question: "Which processing method is used for coffee 2-1?",
+                    answer: "Honey",
+                    options: ["Washed", "Honey", "Natural"]
+                },
+                {
+                    question: "Which processing method is used for coffee 2-2?",
+                    answer: "Natural",
+                    options: ["Washed", "Honey", "Natural"]
+                }
+            ],
+            3: [
+                {
+                    question: "How many single varietal coffees are in Group 3?",
+                    answer: "2",
+                    options: ["1", "2", "3", "4"]
+                },
+                {
+                    question: "What is the varietal of coffee 3-1?",
+                    answer: "Field Blend",
+                    options: ["Ethiopia Heirloom", "SL28", "SL34", "Field Blend"]
+                },
+                {
+                    question: "What is the varietal of coffee 3-2?",
+                    answer: "Field Blend",
+                    options: ["Ethiopia Heirloom", "Typica", "Bourbon", "Field Blend"]
+                },
+                {
+                    question: "What is the varietal of coffee 3-3?",
+                    answer: "Pink Bourbon",
+                    options: ["Pink Bourbon", "Chiroso", "Geisha", "Field Blend"]
+                },
+                {
+                    question:  "What is the varietal of coffee 3-4?",
+                    answer: "Chiroso",
+                    options: ["Pink Bourbon", "Chiroso", "Geisha", "Field Blend"]
+                }
+            ],
+            4: [
+                {
+                    question: "What is NOT the common characteristic of all coffees in Group 4?",
+                    answer: "Varietal",
+                    options: ["Country", "Varietal" ,"Processing Method"]
+                },
+                {
+                    question: "What is the origin of coffee 4-1?",
+                    answer: "Peru",
+                    options: ["Colombia", "Bolivia", "Ecuador", "Peru"]
+                },
+                {
+                    question: "What is the varietal of coffee 4-1?",
+                    answer: "Others",
+                    options: ["Geisha", "Bourbon", "Typica", "Others"]
+                },
+                {
+                    question: "What is the varietal of coffee 4-2?",
+                    answer: "Bourbon",
+                    options: ["Geisha", "Bourbon", "Typica", "Others"]
+                },
+                {
+                    question: "What is the varietal of coffee 4-3?",
+                    answer: "Others",
+                    options: ["Geisha", "Bourbon", "Typica", "Others"]
+                }
+            ]
+        };
+
+        // Add coffee links data
+        const coffeeLinks = {
+            1: {
+                title: "Group 1 Coffees:",
+                links: [
+                    {
+                        name: "1-1: Panama Hacienda La Esmeralda Natural Geisha",
+                        url: "https://www.blackwhiteroasters.com/products/r-hacienda-la-esmeralda-velo-natural" // Replace with actual URL
+                    },
+                    {
+                        name: "1-2: Taiwan ZhouZouYuan Estate Natural Geisha",
+                        url: "https://beannbeancoffee.com/products/taiwan-alishan-zou-zhou-yuan-estate-gesha-natural" // Replace with actual URL
+                    },
+                    {
+                        name: "1-3: Taiwan JingLong Coffee Manor Washed Geisha",
+                        url: "https://beannbeancoffee.com/products/taiwan-alishan-jing-long-gesha-washed" // Replace with actual URL
+                    }
+                ]
+            },
+            2: {
+                title: "Group 2 Coffees:",
+                links: [
+                    {
+                        name: "2-1: Ethiopia Alo #1 Honey 74158",
+                        url: "https://www.seycoffee.com/products/2024-tamiru-tadesse-tesema-sey-x-alo-lot-1-dry-fermented-honey-ethiopia" // Replace with actual URL
+                    },
+                    {
+                        name: "2-2: Ethiopia Alo #2 Natural 74158",
+                        url: "https://www.seycoffee.com/products/2024-tamiru-tadesse-tesema-sey-x-alo-lot-2-controlled-natural-ethiopia" // Replace with actual URL
+                    },
+                    {
+                        name: "2-3: Ethiopia Alo #3 Blanched-Natural 74158",
+                        url: "https://www.seycoffee.com/products/2024-tamiru-tadesse-tesema-sey-x-alo-lot-3-blanched-natural-ethiopia" // Replace with actual URL
+                    }
+                ]
+            },
+            3: {
+                title: "Group 3 Coffees:",
+                links: [
+                    {
+                        name: "3-1: Burundi Musumba Hill Washed Field Blend",
+                        url: "https://www.seycoffee.com/products/2025-bukeye-musumba-hill-burundi" // Replace with actual URL
+                    },
+                    {
+                        name: "3-2: Kenya Kamavindi Estate Washed Field Blend",
+                        url: "https://www.seycoffee.com/products/2025-mbature-family-kamavindi-estate-field-blend-kenya" // Replace with actual URL
+                    },
+                    {
+                        name: "3-3: Colombia Wilson Alba Washed Pink Bourbon",
+                        url: "https://www.seycoffee.com/collections/archived-coffees/products/2025-wilson-alba-sierra-morena-3rd-harvest-colombia" // Replace with actual URL
+                    },
+                    {
+                        name: "3-4: Colombia David Berrio Washed Chiroso (1st harvest)",
+                        url: ""// Replace with actual URL
+                    }
+                ]
+            },
+            4: {
+                title: "Group 4 Coffees:",
+                links: [
+                    {
+                        name: "4-1: Peru Lucio Luque Washed SL9",
+                        url: "https://www.seycoffee.com/collections/archived-coffees/products/2025-lucio-luque-peru" // Replace with actual URL
+                    },
+                    {
+                        name: "4-2: Peru Famalia Quilla Washed Bourbon",
+                        url: "" // Replace with actual URL
+                    },
+                    {
+                        name: "4-3: Peru Rene Arellanos Ore Washed Typica Americana",
+                        url: "https://www.seycoffee.com/collections/archived-coffees/products/2025-rene-arellanos-ore-garancalqui-peru" // Replace with actual URL
+                    }
+                ]
+            }
+        };
+
+        let currentGroup = 0;
+        let userAnswers = [];
+
+        function selectGroup(groupNumber) {
+            currentGroup = groupNumber;
+            userAnswers = [];
+            
+            // Hide group selection and show questions
+            document.getElementById('groupSelection').classList.add('hidden');
+            document.getElementById('introCard').classList.add('hidden');
+            document.getElementById('questionContainer').classList.remove('hidden');
+            document.getElementById('backButton').classList.remove('hidden');
+            
+            // Load questions for the selected group
+            loadQuestions(groupNumber);
+        }
+
+        function loadQuestions(groupNumber) {
+            const questionsForGroup = questions[groupNumber];
+            let questionsHTML = `<h2>Group ${groupNumber} Questions</h2>`;
+            
+            questionsForGroup.forEach((q, index) => {
+                questionsHTML += `
+                    <div class="question-card">
+                        <h3>Question ${index + 1}:</h3>
+                        <p>${q.question}</p>
+                        <select id="answer${index}" class="answer-input">
+                            <option value="">Select your answer</option>
+                            ${q.options.map(option => `<option value="${option}">${option}</option>`).join('')}
+                        </select>
+                    </div>
+                `;
+            });
+            
+            questionsHTML += `<button class="submit-btn" onclick="submitAnswers()">Submit Answers</button>`;
+            
+            document.getElementById('questionContainer').innerHTML = questionsHTML;
+        }
+
+        function submitAnswers() {
+            const questionsForGroup = questions[currentGroup];
+            userAnswers = [];
+            
+            // Collect user answers
+            for (let i = 0; i < questionsForGroup.length; i++) {
+                const userAnswer = document.getElementById(`answer${i}`).value;
+                userAnswers.push(userAnswer);
+            }
+            
+            // Check if all questions are answered
+            if (userAnswers.some(answer => answer === "")) {
+                alert("Please answer all questions before submitting.");
+                return;
+            }
+            
+            // Calculate score and show results
+            showResults();
+        }
+
+        function showResults() {
+            const questionsForGroup = questions[currentGroup];
+            let correctAnswers = 0;
+            let resultHTML = "";
+            
+            // Compare user answers with correct answers
+            questionsForGroup.forEach((q, index) => {
+                const isCorrect = userAnswers[index] === q.answer;
+                if (isCorrect) correctAnswers++;
+                
+                resultHTML += `
+                    <div class="question-card">
+                        <h3>Question ${index + 1}:</h3>
+                        <p>${q.question}</p>
+                        <p>Your answer: <span class="${isCorrect ? 'correct' : 'incorrect'}">${userAnswers[index]}</span></p>
+                        <p>Correct answer: <span class="correct">${q.answer}</span></p>
+                    </div>
+                `;
+            });
+            
+            // Modify the coffee links section
+            resultHTML += `
+                <div class="coffee-links">
+                    <h3>${coffeeLinks[currentGroup].title}</h3>
+                    ${coffeeLinks[currentGroup].links.map(link => {
+                        if (!link.url) {
+                            return `<a class="unavailable">${link.name}<span class="unavailable-text">(Not Available)</span></a>`;
+                        }
+                        return `<a href="${link.url}" target="_blank">${link.name}</a>`;
+                    }).join('')}
+                </div>
+            `;
+            
+            // Calculate percentage score
+            const percentage = (correctAnswers / questionsForGroup.length) * 100;
+            
+            // Display score and results
+            document.getElementById('scoreDisplay').innerHTML = `Your Score: ${correctAnswers} out of ${questionsForGroup.length} (${percentage}%)`;
+            document.getElementById('resultDetails').innerHTML = resultHTML;
+            
+            // Hide questions and show results
+            document.getElementById('questionContainer').classList.add('hidden');
+            document.getElementById('resultCard').style.display = 'block';
+        }
+
+        function returnToLanding() {
+            // Hide questions and results, show group selection
+            document.getElementById('questionContainer').classList.add('hidden');
+            document.getElementById('resultCard').style.display = 'none';
+            document.getElementById('groupSelection').classList.remove('hidden');
+            document.getElementById('introCard').classList.remove('hidden');
+            document.getElementById('backButton').classList.add('hidden');
+            
+            // Reset current group and user answers
+            currentGroup = 0;
+            userAnswers = [];
+        }
+
+        function returnToGroups() {
+            // Hide results and show group selection
+            document.getElementById('resultCard').style.display = 'none';
+            document.getElementById('groupSelection').classList.remove('hidden');
+            document.getElementById('introCard').classList.remove('hidden');
+            document.getElementById('backButton').classList.add('hidden');
+            
+            // Reset current group and user answers
+            currentGroup = 0;
+            userAnswers = [];
+        }
+    </script>
+</body>
+</html>
