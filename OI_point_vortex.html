@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FT99HW58XX"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}  
+    gtag('js', new Date());
+    gtag('config', 'G-FT99HW58XX');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimal Interpolation for Point Vortex System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        /* —— Layout & Typography —— */
+        body{font-family:'Courier New',monospace;background:#f9f9f9;margin:0;padding:0;overflow-x:hidden;}
+        header{background:rgba(255,255,255,.9);box-shadow:0 2px 4px rgba(0,0,0,.1);padding:1rem;position:relative;}
+        .container{max-width:1200px;margin:0 auto;padding:2rem;}
+        .content{background:#fff;padding:2rem;border-radius:10px;box-shadow:0 4px 8px rgba(0,0,0,.1);}        
+        h1{color:#333;margin-bottom:1rem;}h2{color:#0066cc;margin:1.5rem 0 .5rem;}h3{color:#333;margin:1rem 0 .5rem;}
+        p{color:#555;line-height:1.6;}
+        /* —— Images & Figures —— */
+        .image-container{display:flex;flex-direction:column;align-items:center;margin:1rem 0;}
+        img{border-radius:8px;max-width:100%;height:auto;}
+        .caption{font-size:.9em;color:#666;text-align:center;margin:.5rem 0 1rem;}
+        /* —— Equations —— */
+        .equation{text-align:center;margin:1.5rem 0;overflow-x:auto;} 
+        /* —— Tables —— */
+        table{width:100%;border-collapse:collapse;margin:1rem 0;}
+        th,td{border:1px solid #ddd;padding:8px;text-align:center;}
+        th{background:#f2f2f2;}
+        /* —— Navigation —— */
+        nav ul{list-style:none;display:flex;gap:1rem;margin:0;padding:0;}nav a{text-decoration:none;color:#333;}
+        .nav-toggle{display:none;flex-direction:column;cursor:pointer;} .nav-toggle span{width:25px;height:3px;background:#333;margin:4px 0;}
+        @media(max-width:768px){nav{display:none;}nav.active{display:block;} .nav-toggle{display:flex;}}
+        /* —— Code blocks —— */
+        .code-block{background:#f5f5f5;padding:1rem;border-radius:5px;overflow-x:auto;font-size:0.9em;margin:1rem 0;}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-toggle"><span></span><span></span><span></span></div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="unavailable.html">Publications</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="teaching.html">Teaching</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="content">
+            <h1>Optimal Interpolation for Point&nbsp;Vortex System</h1>
+            <p>This project implements <strong>Optimal Interpolation (OI)</strong> to assimilate drifter observations into a nonlinear <em>point vortex</em> model with 2 vortices and 1 drifter. The goal is to understand how well a simple OI scheme can correct forecast errors and track the chaotic truth trajectory. The framework developed here allows us to validate analysis against truth and no-DA baselines, while assessing the sensitivity to background-error covariance <em>P<sup>b</sup></em>.</p>
+
+            <h2>Point Vortex Model</h2>
+            <p>Each vortex is a point singularity with circulation \(\Gamma\) embedded in incompressible, inviscid 2-D flow. Vortex coordinates \((x_j,y_j)\) evolve via:</p>
+            <div class="equation">
+                \begin{align}
+                \frac{dx_j}{dt} &= -\frac{1}{2\pi}\sum_{j'\neq j}^{N_v}\frac{\Gamma_{j'}(y_j-y_{j'})}{\ell_{jj'}^2} \\
+                \frac{dy_j}{dt} &= \frac{1}{2\pi}\sum_{j'\neq j}^{N_v}\frac{\Gamma_{j'}(x_j-x_{j'})}{\ell_{jj'}^2}
+                \end{align}
+            </div>
+            <p>while a passive drifter \((\xi_k,\eta_k)\) obeys analogous equations forced by the vortices:</p>
+            <div class="equation">
+                \begin{align}
+                \frac{d\xi_k}{dt} &= -\frac{1}{2\pi}\sum_{j=1}^{N_v}\frac{\Gamma_j(\eta_k-y_j)}{\ell_{kj}^2} \\
+                \frac{d\eta_k}{dt} &= \frac{1}{2\pi}\sum_{j=1}^{N_v}\frac{\Gamma_j(\xi_k-x_j)}{\ell_{kj}^2}
+                \end{align}
+            </div>
+            <p>where \(\ell_{jj'}^2=(x_j-x_{j'})^2+(y_j-y_{j'})^2\) is the squared separation distance between vortices and \(\ell_{kj}^2=(\xi_k-x_j)^2+(\eta_k-y_j)^2\) is the squared separation between drifter and vortex.</p>
+            
+            <p>This system exhibits several interesting properties that make it challenging for data assimilation. The point vortex model conserves total circulation, energy, and angular momentum in the absence of external forces, creating a constrained dynamical system. Even with just two vortices, the motion of drifters can be chaotic, showing sensitive dependence on initial conditions—small differences in starting positions can lead to dramatically different trajectories over time. Additionally, the system demonstrates non-normal growth characteristics where small perturbations can lead to rapid error amplification due to the nonlinear interactions between vortices and drifters.</p>
+
+            <h3>Experimental Setup</h3>
+            <table>
+                <tr><th>Parameter</th><th>Value</th></tr>
+                <tr><td>Vortex circulation \(\Gamma\)</td><td>1</td></tr>
+                <tr><td>Initial vortex positions</td><td>(1,0), (-1,0)</td></tr>
+                <tr><td>Drifter initial position</td><td>(1.0,-0.6)</td></tr>
+                <tr><td>Forecast span</td><td>\(T=(4\pi)^2\)</td></tr>
+                <tr><td>Time step</td><td>\(\Delta t = 1\)</td></tr>
+                <tr><td>Initial error</td><td>\(e^a_0 \sim \mathcal{N}(0, 0.01^2)\)</td></tr>
+                <tr><td>Observation noise</td><td>\(\epsilon^t_k \sim \mathcal{N}(0, 0.02^2)\)</td></tr>
+            </table>
+
+            <h2>Optimal Interpolation (OI)</h2>
+            <p>The analysis update is given by:</p>
+            <div class="equation">
+                \begin{align}
+                \mathbf{x}^a &= \mathbf{x}^b + \mathbf{K}(\mathbf{y} - H\mathbf{x}^b) \\
+                \mathbf{K} &= \mathbf{P}^bH^T(H\mathbf{P}^bH^T+\mathbf{R})^{-1}
+                \end{align}
+            </div>
+            <p>Only drifter positions are observed, so the observation operator is:</p>
+            <div class="equation">
+                \[H=[\;0_{2\times4}\;I_{2\times2}\;]\]
+            </div>
+            <p>I initialize <em>P<sup>b</sup></em> and <em>R</em> as diagonal matrices with \(\sigma_b=\sigma_o=0.02\):</p>
+            
+            <div class="equation">
+                \begin{align}
+                \mathbf{P}^b = (0.02)^2 \times
+                \begin{bmatrix}
+                1 & 0 & 0 & 0 & 0 & 0 \\
+                0 & 1 & 0 & 0 & 0 & 0 \\
+                0 & 0 & 1 & 0 & 0 & 0 \\
+                0 & 0 & 0 & 1 & 0 & 0 \\
+                0 & 0 & 0 & 0 & 1 & 0 \\
+                0 & 0 & 0 & 0 & 0 & 1
+                \end{bmatrix}
+                \end{align}
+            </div>
+            
+            <h3>Validation Example</h3>
+            <p>To validate the OI implementation, we can examine a specific analysis step. For instance, at \(k=5\):</p>
+            
+            <div class="code-block">
+                <p><strong>Background State</strong> \((\mathbf{x}^b_5)^\top\):</p>
+                <p>[0.799, -1.001, 0.062, 0.141, 0.882, -0.565]</p>
+                
+                <p><strong>Observation</strong> \(\mathbf{y}_5^\top\):</p>
+                <p>[1.210, -0.370]</p>
+                
+                <p><strong>Innovation</strong> \((\mathbf{d}^{OI}_5)^\top = (\mathbf{y}^o_5 - H\mathbf{x}^b_k)^\top\):</p>
+                <p>[0.328, 0.195]</p>
+                
+                <p><strong>Kalman Gain</strong> \(\mathbf{K}^{OI}\):</p>
+                <p>Since \(H \mathbf{P}^b H^\top = \mathbf{R}\), then \((H \mathbf{P}^b H^\top + \mathbf{R})^{-1} = \frac{1}{2} (H \mathbf{P}^b H^\top)^{-1}\)</p>
+                <p>\(\mathbf{K}^{OI} = \begin{bmatrix} 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ 0 & 0 \\ 0.5 & 0 \\ 0 & 0.5 \end{bmatrix}\)</p>
+                
+                <p><strong>Analysis State</strong> \(\mathbf{x}^a_5\):</p>
+                <p>[0.799, -1.001, 0.062, 0.141, 1.046, -0.467]</p>
+            </div>
+            
+            <p>Notice that only the drifter components (last two elements) are updated, while vortex positions remain unchanged. This highlights the limitation of our diagonal \(\mathbf{P}^b\) formulation.</p>
+
+            <h2>Results</h2>
+            <p>OI dramatically reduces forecast error and keeps the drifter trajectory close to truth:</p>
+            <div class="image-container">
+                <img src="img/pv/point_vortex_traj.png" alt="Truth vs OI vs NoDA">
+                <p class="caption">Figure 1: Truth (black), NoDA (magenta), and OI analysis (green) trajectories. The OI analysis successfully tracks the true trajectory despite the chaotic nature of the system, while the no-data-assimilation forecast quickly diverges.</p>
+            </div>
+            <div class="image-container">
+                <img src="img/pv/drifter_errors.png" alt="Error norms over time">
+                <p class="caption">Figure 2: Drifter error norms—analysis (green) consistently outperforms forecast (blue) and no-DA (dashed). The analysis errors remain bounded throughout the assimilation window, demonstrating the effectiveness of OI in constraining the system state.</p>
+            </div>
+            
+            <div class="image-container">
+                <img src="img/pv/covariance_innovation_stats.png" alt="Covariance and innovation statistics">
+                <p class="caption">Figure 3: Top panel shows the trace of background error covariance (\(\mathbf{P}^b\)) and observation error covariance (\(\mathbf{R}\)) matrices compared to the theoretical limit \(L(\sigma^o)^2\), where \(L=2\) is the observation space dimension. Bottom panel displays the squared innovation norm \(||d^{ob}_k||^2\) measuring the magnitude of the difference between observations and background forecasts.</p>
+            </div>
+
+            <h2>Tuning <em>P<sup>b</sup></em></h2>
+            <p>Smaller background variance tightens the Kalman gain, but under-estimating <em>P<sup>b</sup></em> can degrade performance. I compare two alternative configurations: \(\mathbf{P}^b = (0.01)^2\mathbf{I}\) (small) and \(\mathbf{P}^b = (0.04)^2\mathbf{I}\) (large).</p>
+            
+            <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <div class="image-container" style="flex: 0 0 48%;">
+                    <img src="img/pv/small_point_vortex_old.png" alt="Small P^b sensitivity">
+                    <p class="caption">Figure 4a: System trajectory with small background error covariance \(\mathbf{P}^b = (0.01)^2\mathbf{I}\). The smaller background errors result in weaker corrections, causing the analysis to follow the forecast more closely.</p>
+                </div>
+                <div class="image-container" style="flex: 0 0 48%;">
+                    <img src="img/pv/large_point_vortex_old.png" alt="Large P^b sensitivity">
+                    <p class="caption">Figure 4b: System trajectory with large background error covariance \(\mathbf{P}^b = (0.04)^2\mathbf{I}\). The larger background errors lead to stronger corrections, allowing the analysis to track observations more closely.</p>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; margin-top: 1rem;">
+                <div class="image-container" style="flex: 0 0 48%;">
+                    <img src="img/pv/small_drifter_errors.png" alt="Small P^b drifter errors">
+                    <p class="caption">Figure 5a: Drifter errors with small background error covariance. The analysis errors (green) show less improvement over the forecast errors (blue), indicating suboptimal assimilation.</p>
+                </div>
+                <div class="image-container" style="flex: 0 0 48%;">
+                    <img src="img/pv/large_drifter_errors.png" alt="Large P^b drifter errors">
+                    <p class="caption">Figure 5b: Drifter errors with large background error covariance. The analysis errors are significantly reduced compared to the forecast, showing more effective assimilation but potentially overfitting to noisy observations.</p>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; margin-top: 1rem;">
+                <div class="image-container" style="flex: 0 0 48%;">
+                    <img src="img/pv/small_covariance_innovation_stats.png" alt="Small P^b innovation stats">
+                    <p class="caption">Figure 6a: Innovation statistics with small background error covariance. The innovations are consistently larger than expected, indicating potential filter divergence due to underestimated background errors.</p>
+                </div>
+                <div class="image-container" style="flex: 0 0 48%;">
+                    <img src="img/pv/large_covariance_innovation_stats.png" alt="Large P^b innovation stats">
+                    <p class="caption">Figure 6b: Innovation statistics with large background error covariance. The innovations are smaller than expected, suggesting potential over-confidence in the observations relative to the background.</p>
+                </div>
+            </div>
+            
+            <div class="image-container">
+                <img src="img/pv/verification_drifter_timeseries.png" alt="Verification timeseries">
+                <p class="caption">Figure 7: Verification of drifter position timeseries with truth data. This time series shows the x and y components of the drifter positions over time, comparing truth (black), analysis (green), and forecast (blue) trajectories. The analysis successfully tracks the oscillatory behavior of the true drifter path.</p>
+            </div>
+
+            <h2>Discussion</h2>
+            <p>OI performance depends critically on proper specification of <em>P<sup>b</sup></em> and <em>R</em>. Testing revealed that our configuration (<em>P<sup>b</sup> = R = (0.02)<sup>2</sup>I</em>) shows good innovation consistency, while underestimated <em>P<sup>b</sup></em> significantly reduces Kalman gain effectiveness. The chaotic nature of vortex dynamics leads to rapid breakdown of linearity, making the practical assimilation window significantly shorter than expected, though drifter-only errors remain manageable even with longer windows. Tangent Linear Model (TLM) validation tests conducted during this study revealed that linearity assumptions became invalid much faster than anticipated due to the strongly nonlinear vortex interactions.</p>
+
+            <p>Static diagonal <em>P<sup>b</sup></em> misses critical vortex-drifter cross-correlations, which fundamentally limits the long-term predictability of the system. In physical reality, vortex positions directly govern drifter motion, so the true background error covariance should contain off-diagonal elements representing these relationships. Instead of the diagonal structure used in this study, a more physically realistic covariance would include cross-correlations:</p>
+            
+            <div class="equation">
+                \begin{align}
+                \mathbf{P}^b_{\text{realistic}} = 
+                \begin{bmatrix}
+                \text{Vortex-vortex} & \text{Vortex-drifter} \\
+                \text{Drifter-vortex} & \text{Drifter-drifter}
+                \end{bmatrix}
+                \end{align}
+            </div>
+            
+            <p>The current implementation means the Kalman gain cannot translate drifter observations into vortex position updates, resulting in suboptimal analysis where only drifter positions get corrected while errors in unobserved vortex positions continue to grow. This is particularly limiting because vortices dominate the system dynamics, and small vortex position errors can lead to large drifter forecast errors over time.</p>
+            
+            <p>The fixed <em>P<sup>b</sup></em> used in this study cannot capture error growth from nonlinear dynamics. The relationship between vortex and drifter positions is inherently nonlinear, with partial derivatives describing these interactions:</p>
+            
+            <div class="equation">
+                \begin{align}
+                \frac{\partial \dot{\xi}_k}{\partial x_j} &= \frac{\Gamma_j(\eta_k-y_j)}{\pi \ell_{kj}^4}(x_j-\xi_k) \\
+                \frac{\partial \dot{\xi}_k}{\partial y_j} &= \frac{\Gamma_j}{\pi \ell_{kj}^4}[\ell_{kj}^2 - 2(\eta_k-y_j)^2]
+                \end{align}
+            </div>
+            
+            <p>These derivatives represent the fundamental relationships that should be reflected in the background error covariance, but are entirely missed by our diagonal formulation. In the present framework, with <em>H</em> = [0<sub>2x4</sub> I<sub>2x2</sub>], the resulting Kalman gain has a specific structure:</p>
+            
+            <div class="equation">
+                \begin{align}
+                \mathbf{K}^{OI} = 
+                \begin{bmatrix}
+                0 & 0 \\
+                0 & 0 \\
+                0 & 0 \\
+                0 & 0 \\
+                0.5 & 0 \\
+                0 & 0.5
+                \end{bmatrix}
+                \end{align}
+            </div>
+            
+            <p>This structure means innovations can only correct drifter positions, never updating the more dynamically important vortex components. With a flow-dependent covariance that included cross-correlations, the Kalman gain would likely have non-zero elements in the upper rows, allowing drifter observations to correct vortex positions.</p>
+            
+            <p>Potential improvements could come from using Extended Kalman filter (EKF) or ensemble methods (EnKF) to estimate cross-correlations between vortex and drifter positions, or implementing adaptive covariance inflation to maintain filter stability. A hybrid approach combining a static climatological component with flow-dependent correlations might also help address the fundamental limitations identified here. Despite these limitations, the linear OI scheme still provides significant short-term error reduction, demonstrating the value of even simple data assimilation in highly nonlinear systems. This project underscores the fundamental challenge in data assimilation: balancing model and observational uncertainties while accurately representing their interdependencies.</p>
+
+            <h2>References</h2>
+            <ul>
+                <li>Aref, H. (2007) <em>Point vortex dynamics: a classical mathematics playground</em>. <strong>J. Math. Phys.</strong>, 48:065401.</li>
+                <li>Ide, K., Kuznetsov, L., Jones, C.K.R.T. (2002) <em>Lagrangian data assimilation for point vortex systems</em>. <strong>J. Turbulence</strong>, 3.</li>
+                <li>Kuznetsov, L., Ide, K., Jones, C.K.R.T. (2003) <em>A method for assimilation of Lagrangian data</em>. <strong>Mon. Wea. Rev.</strong>, 131(10):2247-2260.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded',()=>{
+            const toggle=document.querySelector('.nav-toggle');
+            const nav=document.querySelector('nav');
+            toggle.addEventListener('click',()=>nav.classList.toggle('active'));
+            nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('active')));
+        });
+    </script>
+</body>
+</html>
