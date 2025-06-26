@@ -231,7 +231,7 @@
             for (let i = 1; i <= 10; i++) {
                 guessingBlocksHTML += `
                     <div class="guess-block" id="block${i}">
-                        <h3>Taste #${i}</h3>
+                        <h3>Coffee ${String.fromCharCode(64 + i)}</h3>
                         <div class="selection-group"><label for="continent${i}">Continent</label><select id="continent${i}">${continentOptions}</select></div>
                         <div class="selection-group"><label for="country${i}">Country</label><select id="country${i}">${countryOptions}</select></div>
                         <div class="selection-group"><label for="varietal${i}">Varietal</label><select id="varietal${i}">${varietalOptions}</select></div>
