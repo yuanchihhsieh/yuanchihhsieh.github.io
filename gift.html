@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FT99HW58XX"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FT99HW58XX');
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gift Exchange</title>
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        /* Custom Animation Utilities */
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- Icons (Inline SVGs to avoid dependencies) ---
+        const IconBase = ({ d, className, ...props }) => (
+            <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="24" height="24" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className={className}
+                {...props}
+            >
+                {d}
+            </svg>
+        );
+
+        const Gift = (props) => <IconBase {...props} d={<><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.9 4.9 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></>} />;
+        const Users = (props) => <IconBase {...props} d={<><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></>} />;
+        const Sparkles = (props) => <IconBase {...props} d={<><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 5H5"/><path d="M19 19v4"/><path d="M23 21h-4"/></>} />;
+        const Box = (props) => <IconBase {...props} d={<><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></>} />;
+        const RefreshCw = (props) => <IconBase {...props} d={<><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></>} />;
+        const Snowflake = (props) => <IconBase {...props} d={<><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/><path d="m20 16-4-4 4-4"/><path d="m4 8 4 4-4 4"/><path d="m16 4-4 4-4-4"/><path d="m8 20 4-4 4 4"/></>} />;
+        const ArrowRight = (props) => <IconBase {...props} d={<><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></>} />;
+        const CheckCircle = (props) => <IconBase {...props} d={<><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></>} />;
+        const AlertCircle = (props) => <IconBase {...props} d={<><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></>} />;
+
+
+        const HolidayExchange = () => {
+            const [step, setStep] = useState('setup'); // setup, result
+            const [count, setCount] = useState(6);
+            
+            // Data State
+            const [names, setNames] = useState(Array(6).fill(''));
+            const [adjectives, setAdjectives] = useState(Array(6).fill(''));
+            const [objects, setObjects] = useState(Array(6).fill(''));
+            
+            // Game State
+            const [assignments, setAssignments] = useState([]);
+            const [revealed, setRevealed] = useState({});
+            const [error, setError] = useState('');
+
+            // Adjust array sizes when count changes
+            useEffect(() => {
+                const adjustArray = (arr, size) => {
+                if (arr.length < size) return [...arr, ...Array(size - arr.length).fill('')];
+                if (arr.length > size) return arr.slice(0, size);
+                return arr;
+                };
+                
+                setNames(prev => adjustArray(prev, count));
+                setAdjectives(prev => adjustArray(prev, count));
+                setObjects(prev => adjustArray(prev, count));
+            }, [count]);
+
+            const handleInputChange = (setter, index, value) => {
+                setter(prev => {
+                const newArr = [...prev];
+                newArr[index] = value;
+                return newArr;
+                });
+            };
+
+            const autoFill = () => {
+                const demoNames = ['Alice', 'Bob', 'Charlie', 'Diana', 'Evan', 'Fiona', 'George', 'Hannah', 'Ian', 'Jenny', 'Kyle', 'Liam'].slice(0, count);
+                const demoAdjs = ['Shiny', 'Broken', 'Giant', 'Tiny', 'Sticky', 'Wet', 'Vintage', 'Neon', 'Fuzzy', 'Haunted', 'Wooden', 'Golden'].slice(0, count);
+                const demoObjs = ['Spoon', 'Pineapple', 'Sock', 'Brick', 'Rubber Duck', 'Cactus', 'Toaster', 'Wig', 'Bucket', 'Potato', 'Hammer', 'Shoe'].slice(0, count);
+                
+                setNames(demoNames.length < count ? [...demoNames, ...Array(count - demoNames.length).fill('Guest')] : demoNames);
+                setAdjectives(demoAdjs.length < count ? [...demoAdjs, ...Array(count - demoAdjs.length).fill('Funny')] : demoAdjs);
+                setObjects(demoObjs.length < count ? [...demoObjs, ...Array(count - demoObjs.length).fill('Thing')] : demoObjs);
+            };
+
+            const shuffle = (array) => {
+                let currentIndex = array.length, randomIndex;
+                const newArr = [...array];
+                while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [newArr[currentIndex], newArr[randomIndex]] = [newArr[randomIndex], newArr[currentIndex]];
+                }
+                return newArr;
+            };
+
+            const generateDraw = () => {
+                // Validation
+                if (names.some(n => !n.trim()) || adjectives.some(a => !a.trim()) || objects.some(o => !o.trim())) {
+                setError('Please fill in all fields before drawing!');
+                return;
+                }
+                setError('');
+
+                // Logic: Derangement (No fixed points)
+                let shuffledReceivers = [];
+                let isValid = false;
+                let attempts = 0;
+
+                // Try to shuffle until no one has themselves
+                while (!isValid && attempts < 1000) {
+                shuffledReceivers = shuffle(names);
+                isValid = names.every((giver, i) => giver !== shuffledReceivers[i]);
+                attempts++;
+                }
+
+                if (!isValid) {
+                setError('Failed to generate valid pairs. Try adding more people or click Draw again.');
+                return;
+                }
+
+                const shuffledAdjs = shuffle(adjectives);
+                const shuffledObjs = shuffle(objects);
+
+                const newAssignments = names.map((giver, i) => ({
+                giver,
+                receiver: shuffledReceivers[i],
+                adj: shuffledAdjs[i],
+                obj: shuffledObjs[i]
+                }));
+
+                setAssignments(newAssignments);
+                setRevealed({});
+                setStep('result');
+            };
+
+            const toggleReveal = (index) => {
+                setRevealed(prev => ({ ...prev, [index]: !prev[index] }));
+            };
+
+            return (
+                <div className="min-h-screen bg-slate-900 text-slate-100 font-sans selection:bg-red-500 selection:text-white pb-20">
+                {/* Decorative Background Elements */}
+                <div className="fixed inset-0 pointer-events-none overflow-hidden">
+                    {[...Array(20)].map((_, i) => (
+                    <div 
+                        key={i}
+                        className="absolute text-slate-800 opacity-20"
+                        style={{
+                        top: `${Math.random() * 100}%`,
+                        left: `${Math.random() * 100}%`,
+                        animation: `float ${3 + Math.random() * 5}s ease-in-out infinite`
+                        }}
+                    >
+                        <Snowflake className="w-8 h-8 md:w-16 md:h-16" />
+                    </div>
+                    ))}
+                </div>
+
+                <div className="relative max-w-5xl mx-auto px-4 py-8">
+                    
+                    {/* Header */}
+                    <header className="text-center mb-12">
+                    <div className="inline-flex items-center justify-center p-3 bg-red-600 rounded-full mb-4 shadow-lg shadow-red-900/50">
+                        <Gift className="w-8 h-8 text-white" />
+                    </div>
+                    <h1 className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-green-400 to-red-400 tracking-tight mb-2">
+                        Gift Exchange
+                    </h1>
+                    <p className="text-slate-400 text-lg">
+                        Adjective + Object + Person. No self-gifting allowed.
+                    </p>
+                    </header>
+
+                    {step === 'setup' && (
+                    <div className="space-y-8 animate-[fadeIn_0.7s_ease-out]">
+                        
+                        {/* Controls */}
+                        <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-6 backdrop-blur-sm">
+                        <div className="flex items-center gap-4">
+                            <span className="text-slate-300 font-medium">Number of Players:</span>
+                            <div className="flex items-center bg-slate-900 rounded-lg p-1 border border-slate-700">
+                            <button 
+                                onClick={() => setCount(Math.max(2, count - 1))}
+                                className="w-10 h-10 hover:bg-slate-800 rounded-md flex items-center justify-center text-slate-400 hover:text-white transition-colors"
+                            >
+                                -
+                            </button>
+                            <span className="w-12 text-center font-bold text-xl">{count}</span>
+                            <button 
+                                onClick={() => setCount(Math.min(12, count + 1))}
+                                className="w-10 h-10 hover:bg-slate-800 rounded-md flex items-center justify-center text-slate-400 hover:text-white transition-colors"
+                            >
+                                +
+                            </button>
+                            </div>
+                        </div>
+                        
+                        <button 
+                            onClick={autoFill}
+                            className="text-sm text-indigo-400 hover:text-indigo-300 underline underline-offset-4"
+                        >
+                            Auto-fill with examples
+                        </button>
+                        </div>
+
+                        {/* Inputs Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        
+                        {/* People Column */}
+                        <div className="bg-slate-800/80 border border-slate-700 rounded-2xl p-6 shadow-xl">
+                            <div className="flex items-center gap-2 mb-4 text-red-400 font-bold text-lg uppercase tracking-wider">
+                            <Users className="w-5 h-5" />
+                            <h2>People</h2>
+                            </div>
+                            <div className="space-y-3">
+                            {names.map((val, i) => (
+                                <input
+                                key={`n-${i}`}
+                                type="text"
+                                placeholder={`Person ${i + 1}`}
+                                value={val}
+                                onChange={(e) => handleInputChange(setNames, i, e.target.value)}
+                                className="w-full bg-slate-900 border border-slate-700 focus:border-red-500 rounded-lg px-4 py-3 outline-none transition-all placeholder:text-slate-600"
+                                />
+                            ))}
+                            </div>
+                        </div>
+
+                        {/* Adjectives Column */}
+                        <div className="bg-slate-800/80 border border-slate-700 rounded-2xl p-6 shadow-xl">
+                            <div className="flex items-center gap-2 mb-4 text-yellow-400 font-bold text-lg uppercase tracking-wider">
+                            <Sparkles className="w-5 h-5" />
+                            <h2>Adjectives</h2>
+                            </div>
+                            <div className="space-y-3">
+                            {adjectives.map((val, i) => (
+                                <input
+                                key={`a-${i}`}
+                                type="text"
+                                placeholder={`Adjective ${i + 1}`}
+                                value={val}
+                                onChange={(e) => handleInputChange(setAdjectives, i, e.target.value)}
+                                className="w-full bg-slate-900 border border-slate-700 focus:border-yellow-500 rounded-lg px-4 py-3 outline-none transition-all placeholder:text-slate-600"
+                                />
+                            ))}
+                            </div>
+                        </div>
+
+                        {/* Objects Column */}
+                        <div className="bg-slate-800/80 border border-slate-700 rounded-2xl p-6 shadow-xl">
+                            <div className="flex items-center gap-2 mb-4 text-green-400 font-bold text-lg uppercase tracking-wider">
+                            <Box className="w-5 h-5" />
+                            <h2>Objects</h2>
+                            </div>
+                            <div className="space-y-3">
+                            {objects.map((val, i) => (
+                                <input
+                                key={`o-${i}`}
+                                type="text"
+                                placeholder={`Object ${i + 1}`}
+                                value={val}
+                                onChange={(e) => handleInputChange(setObjects, i, e.target.value)}
+                                className="w-full bg-slate-900 border border-slate-700 focus:border-green-500 rounded-lg px-4 py-3 outline-none transition-all placeholder:text-slate-600"
+                                />
+                            ))}
+                            </div>
+                        </div>
+                        </div>
+
+                        {error && (
+                        <div className="flex items-center justify-center gap-2 text-red-400 bg-red-400/10 p-4 rounded-xl border border-red-400/20">
+                            <AlertCircle className="w-5 h-5" />
+                            <p>{error}</p>
+                        </div>
+                        )}
+
+                        <button
+                        onClick={generateDraw}
+                        className="w-full py-5 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-2xl font-bold text-xl shadow-lg shadow-red-900/50 transform hover:scale-[1.01] transition-all flex items-center justify-center gap-3"
+                        >
+                        <Sparkles className="w-6 h-6" />
+                        Perform the Draw
+                        </button>
+                    </div>
+                    )}
+
+                    {step === 'result' && (
+                    <div className="animate-[fadeIn_0.5s_ease-out]">
+                        <div className="flex justify-between items-center mb-8">
+                        <h2 className="text-2xl font-bold text-white">The Assignments</h2>
+                        <button
+                            onClick={() => setStep('setup')}
+                            className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition-colors border border-slate-700"
+                        >
+                            <RefreshCw className="w-4 h-4" />
+                            Start Over
+                        </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {assignments.map((card, i) => (
+                            <div 
+                            key={i}
+                            onClick={() => toggleReveal(i)}
+                            className={`
+                                relative group cursor-pointer perspective-1000 transition-all duration-500
+                                ${revealed[i] ? 'scale-100' : 'hover:scale-105'}
+                            `}
+                            >
+                            {/* Card Container */}
+                            <div className={`
+                                relative w-full aspect-[4/3] rounded-2xl shadow-2xl transition-all duration-700 transform-style-3d
+                                ${revealed[i] ? 'rotate-y-180' : ''}
+                            `}>
+                                
+                                {/* Front of Card (The Giver) */}
+                                <div className="absolute inset-0 backface-hidden bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-2xl p-6 flex flex-col items-center justify-center text-center">
+                                <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mb-4 border border-slate-600 group-hover:border-red-500 transition-colors">
+                                    <Users className="w-8 h-8 text-slate-400 group-hover:text-red-400 transition-colors" />
+                                </div>
+                                <p className="text-slate-400 text-sm uppercase tracking-widest mb-1">Giver</p>
+                                <h3 className="text-2xl font-bold text-white">{card.giver}</h3>
+                                <p className="mt-4 text-xs text-slate-500 flex items-center gap-1">
+                                    Tap to reveal mission <ArrowRight className="w-3 h-3" />
+                                </p>
+                                </div>
+
+                                {/* Back of Card (The Result) */}
+                                <div className="absolute inset-0 backface-hidden rotate-y-180 bg-gradient-to-br from-red-900 to-slate-900 border border-red-500/30 rounded-2xl p-6 flex flex-col items-center justify-between text-center shadow-red-900/20 shadow-inner">
+                                <div className="w-full">
+                                    <p className="text-red-300 text-xs font-bold uppercase tracking-widest mb-2">Target</p>
+                                    <h3 className="text-3xl font-bold text-white mb-4">{card.receiver}</h3>
+                                    <div className="h-px w-16 bg-gradient-to-r from-transparent via-red-500 to-transparent mx-auto mb-4"></div>
+                                    <p className="text-slate-400 text-xs uppercase tracking-widest mb-1">Must Gift A</p>
+                                    <div className="flex flex-col gap-1">
+                                    <span className="text-yellow-400 font-bold text-xl">{card.adj}</span>
+                                    <span className="text-green-400 font-bold text-xl">{card.obj}</span>
+                                    </div>
+                                </div>
+                                <CheckCircle className="w-6 h-6 text-green-500 opacity-50" />
+                                </div>
+
+                            </div>
+                            </div>
+                        ))}
+                        </div>
+                        
+                        <div className="mt-12 text-center">
+                        <p className="text-slate-500 text-sm">
+                            Take turns tapping your card to see who you are gifting to!
+                        </p>
+                        </div>
+                    </div>
+                    )}
+
+                </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<HolidayExchange />);
+    </script>
+</body>
+</html>
