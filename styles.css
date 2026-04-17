@@ -169,6 +169,12 @@ a:hover {
 
 /* Mobile Styles */
 @media (max-width: 768px) {
+    #boxes {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        gap: 1rem;
+    }
+
     .nav-toggle {
         display: block;
         position: absolute;
@@ -221,6 +227,10 @@ a:hover {
 }
 
 @media (max-width: 480px) {
+    #boxes {
+        gap: 0.8rem;
+    }
+
     .box {
         padding: 0.8rem;
         min-width: 150px;
