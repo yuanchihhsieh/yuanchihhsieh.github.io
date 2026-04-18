@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FT99HW58XX"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FT99HW58XX');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiffusionNet for Out-of-Sample Molecular Embeddings - Yuan-Chih Hsieh</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Courier New', monospace; background-color: #f9f9f9; margin: 0; padding: 0; overflow-x: hidden; }
+        header { background-color: rgba(255,255,255,0.9); box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 1rem; position: relative; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .content { background-color: #fff; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1 { color: #333; margin-bottom: 1rem; }
+        h2 { color: #0066cc; margin-top: 2rem; margin-bottom: 0.5rem; }
+        p { color: #555; line-height: 1.7; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 0.6rem; color: #555; }
+        .highlight-box { background-color: #f3f6fb; border-left: 4px solid #0066cc; padding: 1rem 1.25rem; border-radius: 8px; margin: 1.5rem 0; }
+        .image-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .image-container { display: flex; flex-direction: column; align-items: center; margin: 1.5rem 0; }
+        img { border-radius: 8px; max-width: 100%; height: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
+        .caption { font-size: 0.9em; color: #666; text-align: center; margin-top: 0.5rem; }
+        .back-link { display: inline-block; margin-top: 1rem; color: #0066cc; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        @media (max-width: 768px) { .container { padding: 1rem; } .content { padding: 1.25rem; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-toggle"><span></span><span></span><span></span></div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="teaching.html">Teaching</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="content">
+            <h1>DiffusionNet for Out-of-Sample Molecular Embeddings</h1>
+            <p>This project implements a diffusion-net encoder for out-of-sample extension on the LJ7 molecular configuration dataset. The key idea is to first learn a diffusion-map embedding on a training set and then train a neural encoder to reproduce those diffusion coordinates. Once that encoder is accurate, it can be applied to new configurations and trajectory data without recomputing the full graph Laplacian or eigendecomposition.</p>
+
+            <div class="highlight-box">
+                <p><strong>Main role:</strong> train a neural encoder that reproduces diffusion-map coordinates for LJ7 molecular configurations and extends the embedding reliably to unseen held-out data and dense MALA trajectory samples.</p>
+            </div>
+
+            <h2>Motivation</h2>
+            <p>Diffusion maps are powerful for discovering low-dimensional geometry, but their standard formulation is fundamentally transductive: the embedding is tied to the dataset on which the kernel graph is built. For many practical workflows, that is a limitation, because new samples arrive after the diffusion map has already been computed. The purpose of DiffusionNet here is to turn the learned geometry into a reusable encoder that maps fresh configurations directly into the same low-dimensional coordinate system.</p>
+
+            <h2>Training Target</h2>
+            <p>The training target is the diffusion-map embedding of the same 5000 LJ7 configurations used in the diffusion-maps analysis. The eigenvalue spectrum of the Markov operator shows a clear gap after the third nontrivial eigenvalue, indicating that a two- to three-dimensional representation captures the main manifold structure. Based on that, I use the first three nontrivial diffusion coordinates as the encoder target.</p>
+            <div class="image-container">
+                <img src="img/amsc808n_project4/dmap_training.png" alt="Diffusion map embedding of LJ7 training configurations">
+                <p class="caption">Diffusion-map embedding of the training configurations, colored by Lennard-Jones energy. This embedding serves as the supervision target for the encoder.</p>
+            </div>
+
+            <h2>Encoder Design and Training</h2>
+            <p>I follow the diffusion-net idea in the encoder-only setting. Instead of building a full autoencoder, I train a feedforward neural network whose output dimension matches the three diffusion coordinates. The loss is simply mean squared error between the encoder output and the diffusion-map coordinates on the training set. This is deliberately simple and follows the project guidance as well as the approach used in related work.</p>
+            <p>The encoder uses several fully connected layers with smooth activations and is trained with an 80-20 split between training and validation data. The training is reported to be stable, with both training and validation losses decreasing to the order of \(10^{-3}\). That matters because it suggests the network is not merely memorizing a noisy embedding, but actually learning a smooth approximation to the coordinate map.</p>
+
+            <h2>Reproducing the Training Embedding</h2>
+            <p>On the training data, the encoder reproduces the diffusion-map coordinates with very high fidelity. The learned output aligns closely with the original diffusion-map geometry and preserves the smooth variation of the potential energy along the manifold. This is the first important checkpoint: if the network cannot recover the training embedding faithfully, then any out-of-sample extension would be difficult to trust.</p>
+            <div class="image-container">
+                <img src="img/amsc808n_project4/encoder_train.png" alt="Encoder output on the diffusion-net training set">
+                <p class="caption">Encoder output on the training data. The learned representation closely matches the geometry and energy organization of the diffusion-map target.</p>
+            </div>
+
+            <h2>Held-Out Unused Configurations</h2>
+            <p>The first true out-of-sample test uses the unused portion of <code>LJ7bins_confs.txt</code>, consisting of 5071 configurations filtered out earlier in the workflow. The encoder maps these unseen configurations onto the same manifold learned from the training set, with no visible folding, fragmentation, or obvious extrapolation failure. The energy field remains consistent with the learned geometry, which is a strong qualitative sign that the encoder has captured the same structural coordinates as the original diffusion map.</p>
+            <div class="image-container">
+                <img src="img/amsc808n_project4/encoder_unused.png" alt="Out-of-sample embedding of unused LJ7 configurations">
+                <p class="caption">Out-of-sample embedding for unused configurations from <code>LJ7bins_confs.txt</code>. The encoder places unseen data smoothly on the same learned manifold.</p>
+            </div>
+
+            <h2>MALA Trajectory Generalization</h2>
+            <p>The second and more interesting test uses <code>MALAtrajectory.txt</code>, a much denser dataset generated by the Metropolis-adjusted Langevin algorithm. This trajectory explores the same energetic basin at higher resolution than the subsampled configuration set. When passed through the encoder, the trajectory fills in the interior of the manifold in a way that remains consistent with the previously learned diffusion-map geometry.</p>
+            <p>This is an important result because it goes beyond simple test-set interpolation. The MALA trajectory is denser and structurally different from the data used for training, yet the encoder still places it meaningfully inside the same low-dimensional coordinate system. That is exactly the kind of behavior needed if the learned embedding is going to be useful downstream for analysis or simulation workflows.</p>
+            <div class="image-container">
+                <img src="img/amsc808n_project4/encoder_mala.png" alt="Out-of-sample embedding of MALA trajectory data">
+                <p class="caption">Out-of-sample embedding of the dense MALA trajectory. The trajectory fills the manifold interior in a way that is consistent with the potential landscape.</p>
+            </div>
+
+            <h2>Why This Project Matters</h2>
+            <p>The diffusion-map project establishes the geometry. The DiffusionNet project makes that geometry usable. Instead of recomputing graph kernels and eigenvectors every time new data arrive, the learned encoder provides a fast parametric map into the same latent coordinates. That is the real value of the method: it turns a static manifold discovery tool into a reusable representation model.</p>
+            <p>This project is especially strong because it is evaluated in a meaningful way. It does not stop at reproducing the training data. It checks whether the learned encoder preserves geometry on held-out configurations and on a dense stochastic trajectory, and it confirms that the out-of-sample points continue to align with the same energy-structured manifold. That makes the result much more convincing than a plain train-loss report.</p>
+
+            <a class="back-link" href="projects.html">Back to Projects</a>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navToggle = document.querySelector('.nav-toggle');
+            const nav = document.querySelector('nav');
+            navToggle.addEventListener('click', () => { nav.classList.toggle('active'); });
+            const navLinks = document.querySelectorAll('nav ul li a');
+            navLinks.forEach(link => { link.addEventListener('click', () => { nav.classList.remove('active'); }); });
+        });
+    </script>
+</body>
+</html>

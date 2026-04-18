@@ -86,6 +86,22 @@
         th {
             background-color: #f2f2f2;
         }
+        .highlight-box {
+            background-color: #f3f6fb;
+            border-left: 4px solid #0066cc;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -108,6 +124,10 @@
         <div class="content">
             <h1>Spring System Optimization</h1>
             <p>This project addresses the optimization of a spring system consisting of 21 nodes and 24 springs. The goal is to minimize the total spring energy by adjusting the positions of the nodes while ensuring that certain nodes remain fixed on a hoop. The energy of the spring system is given by:</p>
+
+            <div class="highlight-box">
+                <p><strong>Main role:</strong> compare gradient-based optimization methods on a constrained spring-network energy minimization problem, focusing on convergence behavior, final configurations, and numerical efficiency.</p>
+            </div>
 
             <!-- <h2>Problem Statement</h2>
             <p>The energy of the spring system is given by:</p> -->
@@ -202,6 +222,8 @@
                 </tr>
                 <!-- Add more rows as needed -->
             </table>
+
+            <a class="back-link" href="projects.html">Back to Projects</a>
         </div>
     </div>
     <script>

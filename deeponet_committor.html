@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FT99HW58XX"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FT99HW58XX');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepONet for Parametric Committor Learning - Yuan-Chih Hsieh</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        header {
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            position: relative;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .content {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        h2 {
+            color: #0066cc;
+            margin-top: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        p {
+            color: #555;
+            line-height: 1.7;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 0.6rem;
+            color: #555;
+        }
+        .equation {
+            overflow-x: auto;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 1.5rem 0;
+        }
+        img {
+            border-radius: 8px;
+            max-width: 100%;
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+        .caption {
+            font-size: 0.9em;
+            color: #666;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        .highlight-box {
+            background-color: #f3f6fb;
+            border-left: 4px solid #0066cc;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .content {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="teaching.html">Teaching</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="content">
+            <h1>DeepONet for Parametric Committor Learning</h1>
+            <p>This project focuses on neural-operator learning for a one-dimensional committor equation. The target is not a single PDE solution, but the operator that maps an entire family of potential functions to the associated committor. I started from the original DeepONet setup on Gaussian random fields, found that its generalization was weak on unseen potentials, and then redesigned the data representation and architecture around a cleaner parametric problem.</p>
+
+            <div class="highlight-box">
+                <p><strong>Main role:</strong> redesign a DeepONet pipeline for operator learning on a parametric committor family, improving test RMSE from roughly \(8.9\times10^{-2}\) in the original GRF-based setting to \(6.68\times10^{-3}\) on unseen potentials in the structured parametric setting.</p>
+            </div>
+
+            <h2>Problem Definition</h2>
+            <p>The committor problem is posed on the interval \([-1,1]\):</p>
+            <div class="equation">
+                <p>
+                    \[
+                    q''(x)-\beta V'(x)q'(x)=0,
+                    \qquad
+                    q(-1)=0,\; q(1)=1,
+                    \qquad
+                    \beta=1.
+                    \]
+                </p>
+            </div>
+            <p>The goal is to learn an operator that maps the potential derivative or its low-dimensional parameterization to the committor function. Ground-truth labels are generated with a Chebyshev spectral solver implemented in <code>Committor1D_helpers.py</code>, so the learned model is always evaluated against a high-quality numerical reference.</p>
+
+            <h2>Why the Original DeepONet Setup Was Not Enough</h2>
+            <p>The initial DeepONet experiment followed the standard function-to-point setup using Gaussian random fields as inputs. In that formulation, 100 GRF samples were discretized on 100 spatial points, and each committor was queried at 100 random points, leading to 10,000 training tuples of the form</p>
+            <div class="equation">
+                <p>
+                    \[
+                    [u(x_0),u(x_1),\dots,u(x_{N_x-1}),y,q(y)].
+                    \]
+                </p>
+            </div>
+            <p>This baseline trained successfully but generalized poorly. The training MSE was approximately \(1.36\times10^{-5}\), yet the test MSE on unseen GRF samples was about \(3.37\times10^{-3}\). On the standard double-well potential \(V(x)=(x^2-1)^2\), the test MSE was \(7.88\times10^{-3}\). Expressed in RMSE, those errors were \(5.81\times10^{-2}\) on GRF test data and \(8.89\times10^{-2}\) on the double-well test, which is large for a smooth 1D problem with simple boundary conditions.</p>
+            <p>That failure mode was useful. It showed that the architecture could fit the training distribution, but the representation and data design were not strong enough to produce reliable operator generalization. Instead of just scaling the same setup, I moved to a more structured parametric family where model choices could be tested more cleanly.</p>
+
+            <h2>Parametric Potential Family</h2>
+            <p>The refined experiment uses a three-parameter family of potentials:</p>
+            <div class="equation">
+                <p>
+                    \[
+                    V(x)=(x^2-1)^2+p_0\exp\left(-\frac{(x-p_1)^2}{2p_2^2}\right),
+                    \]
+                </p>
+            </div>
+            <p>with parameter ranges</p>
+            <ul>
+                <li>\(p_0\in[0,5]\)</li>
+                <li>\(p_1\in[-0.5,0.5]\)</li>
+                <li>\(p_2\in[0.25,0.7]\)</li>
+            </ul>
+            <p>This reformulation turns operator learning into a problem with a known latent structure. It keeps the target physics nontrivial while making it easier to reason about coverage, normalization, and out-of-sample generalization across unseen potentials.</p>
+
+            <h2>Dataset Design</h2>
+            <p>I sample \(N_u=120\) parameter triplets uniformly from the allowed parameter ranges. For each potential, I draw \(N_{\mathrm{eval}}=100\) query locations \(y\sim\mathcal{U}([-1,1])\), compute the corresponding spectral committor, and construct tuples of the form</p>
+            <div class="equation">
+                <p>
+                    \[
+                    [p_0,p_1,p_2,y,q(y)].
+                    \]
+                </p>
+            </div>
+            <p>This yields 12,000 total samples. The critical design choice is that the train/test split is performed by parameter triplet rather than by individual tuple. That means the model is evaluated on entirely unseen potentials, not just unseen query points from familiar parameter settings. This is a stronger and more realistic generalization test for operator learning.</p>
+
+            <h2>Architecture</h2>
+            <p>The final model is a DeepONet with branch-trunk decomposition:</p>
+            <div class="equation">
+                <p>
+                    \[
+                    q_{\theta}(y)=\sigma\big(\langle b,t\rangle+c\big),
+                    \qquad
+                    b=\mathrm{BranchNN}(p_0,p_1,p_2)\in\mathbb{R}^{m},
+                    \qquad
+                    t=\mathrm{TrunkNN}(y)\in\mathbb{R}^{m},
+                    \]
+                </p>
+            </div>
+            <p>with latent dimension \(m=64\) and sigmoid head \(\sigma(z)=1/(1+e^{-z})\). Both the branch network and trunk network are two-layer MLPs with width 128 and \(\tanh\) activations.</p>
+            <p>The architecture changes that mattered most were:</p>
+            <ul>
+                <li>Parameter normalization for balanced branch-network inputs:
+                \(p_0\mapsto p_0/5\), \(p_1\mapsto (p_1+0.5)\), \(p_2\mapsto (p_2-0.25)/0.45\).</li>
+                <li>Fourier features for the query coordinate:
+                \([y,\sin(\pi y),\cos(\pi y),\sin(2\pi y),\cos(2\pi y),\sin(3\pi y),\cos(3\pi y)]\).</li>
+                <li>A soft boundary penalty
+                \(\lambda_{\mathrm{bc}}\big[(q_{\theta}(-1))^2+(q_{\theta}(1)-1)^2\big]\)
+                with \(\lambda_{\mathrm{bc}}=10^{-2}\).</li>
+            </ul>
+            <p>Together, these changes make the model easier to optimize and better aligned with the structure of the target function class. The Fourier features are especially useful because the committor is smooth but not purely linear in space, so the trunk network benefits from a richer basis than raw \(y\) alone.</p>
+
+            <h2>Training Setup</h2>
+            <p>The model is trained with Adam using learning rate \(10^{-3}\), batch size 512, and a maximum of 300 epochs. Early stopping is selected based on test RMSE. This is a relatively compact training setup, but it is enough to make the improvement attributable to architecture and representation choices rather than brute-force scaling.</p>
+            <p>The saved training curve confirms steady optimization. By epoch 1 the train/test RMSE are approximately \(9.90\times10^{-2}\) and \(1.09\times10^{-1}\), and by epoch 270 they reach \(3.92\times10^{-3}\) and \(6.68\times10^{-3}\), respectively. The small train-test gap indicates that the refined DeepONet is not merely memorizing the parameterized training set.</p>
+
+            <h2>Results</h2>
+            <table>
+                <tr>
+                    <th>Configuration</th>
+                    <th>Train RMSE</th>
+                    <th>Test RMSE</th>
+                </tr>
+                <tr>
+                    <td>Baseline DeepONet (sigmoid head)</td>
+                    <td>\(\sim 6.10\times10^{-3}\)</td>
+                    <td>\(\sim 9.75\times10^{-3}\)</td>
+                </tr>
+                <tr>
+                    <td>Enhanced DeepONet with normalization, BC penalty, Fourier features</td>
+                    <td>\(3.92\times10^{-3}\)</td>
+                    <td>\(6.68\times10^{-3}\)</td>
+                </tr>
+            </table>
+            <p>The refined model materially improves over both the original GRF-based DeepONet and the simpler parametric baseline. The test RMSE of \(6.68\times10^{-3}\) is over an order of magnitude smaller than the original GRF-to-committor generalization error of roughly \(8.9\times10^{-2}\). That makes this version of the project much more convincing as an operator-learning result rather than just a training demonstration.</p>
+
+            <h2>Boundary Behavior and Modeling Tradeoffs</h2>
+            <p>The soft boundary penalty improves endpoint behavior but does not guarantee exact satisfaction of the boundary conditions. The reported value \(q_{\theta}(-1)\approx 0.0099\) is small but not exact. This is an honest limitation of the sigmoid-head formulation. A more principled hard-constraint ansatz is</p>
+            <div class="equation">
+                <p>
+                    \[
+                    q_{\theta}(y)=\frac{1+y}{2}+(1-y^2)h_{\theta}(p_0,p_1,p_2,y),
+                    \]
+                </p>
+            </div>
+            <p>which enforces \(q(-1)=0\) and \(q(1)=1\) by construction. I call this out because it clarifies the next step technically: the current model performs well, but there is still room to make the inductive bias more physically faithful.</p>
+
+            <h2>Why This Project Stands Out</h2>
+            <p>This project is strong because it combines several important pieces of technical judgment in one place: operator-learning formulation, data-generation with a trusted spectral solver, split design that truly tests generalization, architecture refinement, feature engineering, and explicit discussion of failure modes. The final result is not just that DeepONet works, but that it works substantially better after a sequence of concrete modeling decisions that can be justified from both the mathematics of the committor problem and the behavior of the training curves.</p>
+
+            <div class="image-container">
+                <img src="img/amsc808n_project3/task3_rmse_barplot.png" alt="RMSE comparison between DeepONet and FNO">
+                <p class="caption">Comparison of train and test RMSE across the Project 3 neural-operator models. On the shared parametric task, the refined DeepONet reaches a test RMSE of \(6.68\times10^{-3}\).</p>
+            </div>
+
+            <a class="back-link" href="projects.html">Back to Projects</a>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navToggle = document.querySelector('.nav-toggle');
+            const nav = document.querySelector('nav');
+
+            navToggle.addEventListener('click', () => {
+                nav.classList.toggle('active');
+            });
+
+            const navLinks = document.querySelectorAll('nav ul li a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    nav.classList.remove('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

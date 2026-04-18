@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FT99HW58XX"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FT99HW58XX');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PINNs for the Allen-Cahn Equation - Yuan-Chih Hsieh</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        header {
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            position: relative;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .content {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        h2 {
+            color: #0066cc;
+            margin-top: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        p {
+            color: #555;
+            line-height: 1.7;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 0.6rem;
+            color: #555;
+        }
+        .equation {
+            overflow-x: auto;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        img {
+            border-radius: 8px;
+            max-width: 100%;
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+        .caption {
+            font-size: 0.9em;
+            color: #666;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        .highlight-box {
+            background-color: #f3f6fb;
+            border-left: 4px solid #0066cc;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .content {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="teaching.html">Teaching</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="content">
+            <h1>PINNs for the Allen-Cahn Equation</h1>
+            <p>This project uses physics-informed neural networks to solve the one-dimensional Allen-Cahn initial-boundary value problem. The aim is to learn the full space-time solution directly from the PDE residual together with initial and boundary constraints, then compare that learned surrogate against a classical numerical reference. In practice, the work is structured like a compact modeling pipeline: define the architecture, design the loss, choose a sampling strategy, train under a scheduler, and benchmark the result on a dense evaluation grid.</p>
+
+            <div class="highlight-box">
+                <p><strong>Main result:</strong> after 2000 training epochs, the PINNs solution agrees well with the spectral benchmark, with reported MAE \(1.04\times 10^{-1}\), RMSE \(2.70\times 10^{-1}\), no NaN values on the evaluation grid, and a predicted range of \([-1.006, 1.003]\).</p>
+            </div>
+
+            <h2>Equation and Boundary Conditions</h2>
+            <p>The Allen-Cahn equation is a canonical model for interface motion and phase separation. In this project I solve</p>
+            <div class="equation">
+                <p>
+                    \[
+                    \frac{\partial u}{\partial t}=\epsilon^2\frac{\partial^2 u}{\partial x^2}+u-u^3,
+                    \qquad \epsilon=0.1,
+                    \]
+                </p>
+            </div>
+            <p>on the domain \(x\in[-1,1]\), \(t\in[0,1]\), together with the initial profile</p>
+            <div class="equation">
+                <p>
+                    \[
+                    u(0,x)=\tanh\left(\frac{x}{\sqrt{2}\epsilon}\right),
+                    \]
+                </p>
+            </div>
+            <p>and homogeneous Neumann boundary conditions</p>
+            <div class="equation">
+                <p>
+                    \[
+                    \frac{\partial u}{\partial x}(t,-1)=\frac{\partial u}{\partial x}(t,1)=0.
+                    \]
+                </p>
+            </div>
+
+            <h2>PINNs Architecture and Loss</h2>
+            <p>The neural model \(\mathcal{N}(t,x;\theta)\) is a five-layer fully connected network with 100 neurons per layer and \(\tanh\) activations. The network takes a space-time coordinate pair \((t,x)\) as input and returns the predicted value \(u(t,x)\). This keeps the architecture simple enough to train reliably while still expressive enough to model a nonlinear interface evolution problem.</p>
+            <p>The loss combines three physics-informed components:</p>
+            <div class="equation">
+                <p>
+                    \[
+                    \mathcal{L}(\theta)=\mathcal{L}_{\mathrm{PDE}}(\theta)+10\mathcal{L}_{\mathrm{IC}}(\theta)+\mathcal{L}_{\mathrm{BC}}(\theta).
+                    \]
+                </p>
+            </div>
+            <div class="equation">
+                <p>
+                    \[
+                    \mathcal{L}_{\mathrm{PDE}}
+                    =\frac{1}{N_{\mathrm{PDE}}}\sum_{j=1}^{N_{\mathrm{PDE}}}
+                    \left\|
+                    \frac{\partial u}{\partial t}
+                    -\epsilon^2\frac{\partial^2 u}{\partial x^2}
+                    -u+u^3
+                    \right\|^2,
+                    \]
+                </p>
+            </div>
+            <div class="equation">
+                <p>
+                    \[
+                    \mathcal{L}_{\mathrm{IC}}
+                    =\frac{1}{N_{\mathrm{IC}}}\sum_{j=1}^{N_{\mathrm{IC}}}
+                    \left\|
+                    u(0,x_j)-\tanh\left(\frac{x_j}{\sqrt{2}\epsilon}\right)
+                    \right\|^2,
+                    \]
+                </p>
+            </div>
+            <div class="equation">
+                <p>
+                    \[
+                    \mathcal{L}_{\mathrm{BC}}
+                    =\frac{1}{N_{\mathrm{BC}}}\sum_{j=1}^{N_{\mathrm{BC}}}
+                    \left(
+                    \left\|\frac{\partial u}{\partial x}(t_j,-1)\right\|^2
+                    +
+                    \left\|\frac{\partial u}{\partial x}(t_j,1)\right\|^2
+                    \right).
+                    \]
+                </p>
+            </div>
+            <p>The factor of 10 on the initial-condition term puts additional emphasis on matching the sharp hyperbolic tangent interface at \(t=0\), which is important for obtaining a reasonable later-time solution.</p>
+
+            <h2>Training Protocol</h2>
+            <p>The model is trained using 20,000 interior collocation points sampled by Latin Hypercube sampling, together with 50 initial-condition points and 50 boundary-condition points. Optimization runs for 2000 epochs with Adam starting from learning rate \(10^{-3}\). A multi-step scheduler multiplies the learning rate by 0.5 at epochs 150, 300, and 450, and then keeps it fixed.</p>
+            <p>This setup reflects a standard continuous-time PINNs workflow: enforce the PDE everywhere in the domain through automatic differentiation, fit the initial condition at \(t=0\), and penalize boundary derivative violations at the endpoints. Framed another way, the project is about turning a PDE into a trainable supervised-style optimization problem without requiring labeled solution data at interior points.</p>
+
+            <div class="image-container">
+                <img src="img/amsc808n_project2/allen_cahn_loss_curves.png" alt="PINNs loss curves for the Allen-Cahn equation">
+                <p class="caption">Training loss curves for the PDE residual, the initial-condition error, and the boundary-condition error over 2000 epochs.</p>
+            </div>
+
+            <h2>Comparison Against the Numerical Reference</h2>
+            <p>After training, I compare the neural solution against a spectral reference defined on a dense grid with 256 spatial points and 1001 time levels, for a total of 256,256 evaluated space-time locations. This gives a proper held-out benchmark rather than relying only on optimization curves. The final error statistics show solid agreement:</p>
+            <ul>
+                <li>MAE \(=1.04\times 10^{-1}\)</li>
+                <li>RMSE \(=2.70\times 10^{-1}\)</li>
+                <li>All 256,256 evaluation points are valid, with no NaN values</li>
+                <li>PINNs range: \([-1.006, 1.003]\)</li>
+                <li>Spectral reference range: \([-1.028, 1.028]\)</li>
+            </ul>
+            <p>These numbers indicate that the learned model reproduces the dominant phase-separation structure well. The network preserves the expected two-phase behavior with smooth transitions between values near \(u=\pm 1\), while remaining numerically stable across the full evaluation domain. In particular, the absence of NaNs across the full grid is a simple but important sanity check on inference stability.</p>
+
+            <div class="image-grid">
+                <div class="image-container">
+                    <img src="img/amsc808n_project2/allen_cahn_heatmaps.png" alt="Heatmap comparison between spectral and PINNs solutions">
+                    <p class="caption">Comparison of the spectral reference, the PINNs prediction, and the absolute error over the full space-time grid.</p>
+                </div>
+                <div class="image-container">
+                    <img src="img/amsc808n_project2/allen_cahn_time_slices.png" alt="Time slices comparing spectral and PINNs solutions">
+                    <p class="caption">Time-slice comparisons at \(t=0.1\) and \(t=0.9\). The PINNs solution tracks the reference closely, with slightly wider transition zones.</p>
+                </div>
+            </div>
+
+            <h2>Interpretation</h2>
+            <p>The heatmaps show that both methods capture the same large-scale dynamics: a sharp initial interface gradually evolves into a smooth phase-separated profile. The time-slice comparisons make the remaining discrepancy clearer. The PINNs solution is slightly smoother than the reference, especially near steep transitions, which is a common behavior in neural PDE surrogates when trained with a finite set of collocation points and a relatively compact network.</p>
+            <p>From a computational standpoint, the PINNs approach is more expensive during training than the numerical reference solver. Its advantage appears after training, since the network can be evaluated at arbitrary query points without rerunning a PDE solve. That makes it attractive as a reusable inference model, while the benchmarked error metrics and visualization pipeline provide a straightforward way to judge whether that reuse is justified.</p>
+
+            <a class="back-link" href="projects.html">Back to Projects</a>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navToggle = document.querySelector('.nav-toggle');
+            const nav = document.querySelector('nav');
+
+            navToggle.addEventListener('click', () => {
+                nav.classList.toggle('active');
+            });
+
+            const navLinks = document.querySelectorAll('nav ul li a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    nav.classList.remove('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

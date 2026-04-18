@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FT99HW58XX"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FT99HW58XX');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Variational Neural Network for the Committor - Yuan-Chih Hsieh</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        header {
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            position: relative;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .content {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        h2 {
+            color: #0066cc;
+            margin-top: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        p {
+            color: #555;
+            line-height: 1.7;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 0.6rem;
+            color: #555;
+        }
+        .equation {
+            overflow-x: auto;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        img {
+            border-radius: 8px;
+            max-width: 100%;
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+        .caption {
+            font-size: 0.9em;
+            color: #666;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        .highlight-box {
+            background-color: #f3f6fb;
+            border-left: 4px solid #0066cc;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .content {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="teaching.html">Teaching</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="content">
+            <h1>Variational Neural Network for the Committor</h1>
+            <p>This project studies the committor equation for the rugged Muller potential with high-dimensional noise. The committor function is central in rare-event sampling and transition path theory because it gives the probability that a stochastic trajectory reaches target set \(B\) before set \(A\). Rather than discretizing the PDE on a large grid in ten dimensions, I build a neural solver around the variational formulation and evaluate it as a learning system with explicit training, sampling, and validation stages.</p>
+
+            <div class="highlight-box">
+                <p><strong>Main result:</strong> the learned \(q=0.5\) transition surface passes a Monte Carlo validation check, with the empirical histogram peaking at \(p \approx 0.477\), standard deviation \(0.094\), and \(68\%\) of sampled starts lying in \([0.4, 0.6]\).</p>
+            </div>
+
+            <h2>Problem Setup</h2>
+            <p>I consider overdamped Langevin dynamics in \(\mathbb{R}^{10}\):</p>
+            <div class="equation">
+                <p>
+                    \[
+                    dX_t = -\nabla V(X_t)\,dt + \sqrt{2\beta^{-1}}\,dW_t,
+                    \qquad q(x)=\mathbb{P}_x \{ \tau_B < \tau_A \}.
+                    \]
+                </p>
+            </div>
+            <p>The corresponding committor solves</p>
+            <div class="equation">
+                <p>
+                    \[
+                    \nabla \cdot \left( e^{-\beta V(x)} \nabla q(x) \right)=0
+                    \quad \text{on } \Omega_{AB}=\mathbb{R}^{d}\setminus(A\cup B),
+                    \qquad
+                    q|_{\partial A}=0,\; q|_{\partial B}=1.
+                    \]
+                </p>
+            </div>
+            <p>The model uses the rugged Muller potential in the first two coordinates and a confining quadratic term in the remaining coordinates. The configuration is:</p>
+            <ul>
+                <li>Dimension \(d=10\), inverse temperature \(\beta=0.1\), corresponding to temperature \(T=10\).</li>
+                <li>Set \(A\) centered at \((-0.57, 1.43)\) and set \(B\) centered at \((0.56, 0.044)\), both with radius \(0.3\) in the \((x_1, x_2)\)-plane and extended cylindrically in \(x_3,\dots,x_{10}\).</li>
+                <li>Visualization window \((x_1, x_2)\in[-1.5,1.0]\times[-0.5,2.0]\).</li>
+                <li>Ruggedized 2D potential \(V_{\mathrm{rugged}}(x_1,x_2)=V_{\mathrm{Muller}}(x_1,x_2)+0.3\cos(2x_1)\cos(2x_2)\).</li>
+                <li>Full 10D potential \(V_{\mathrm{full}}(x)=V_{\mathrm{rugged}}(x_1,x_2)+\dfrac{1}{2\sigma^2}\sum_{i=3}^{10}x_i^2\) with \(\sigma=0.05\).</li>
+            </ul>
+
+            <h2>Variational Neural Network Formulation</h2>
+            <p>The committor is represented by a neural ansatz that approximately enforces the boundary behavior through smoothed indicator functions \(\chi_A\) and \(\chi_B\):</p>
+            <div class="equation">
+                <p>
+                    \[
+                    q(x)=F(x;\theta)=\big(1-\chi_A(x)\big)\Big(\big(1-\chi_B(x)\big)N(x;\theta)+\chi_B(x)\Big).
+                    \]
+                </p>
+            </div>
+            <p>Here \(N(x;\theta)\) is a six-layer fully connected neural network with \(\tanh\) activations and 256 neurons per hidden layer. In practice, this turns the PDE solve into a trainable function-approximation pipeline whose objective is the Dirichlet energy</p>
+            <div class="equation">
+                <p>
+                    \[
+                    \mathcal{I}[u]=\int_{\Omega_{AB}} e^{-\beta V(x)} \| \nabla u(x)\|^2\,dx.
+                    \]
+                </p>
+            </div>
+            <p>To reduce the burden of sampling in energetically unfavorable regions, I draw training points from an importance distribution \(\rho_{T'}\propto e^{-\beta'V}\) with \(T'=20\) and \(\beta'=0.05\). This yields the Monte Carlo training objective</p>
+            <div class="equation">
+                <p>
+                    \[
+                    \mathcal{L}(\theta)=\frac{1}{N}\sum_{i=1}^{N}
+                    \exp\big(-(\beta-\beta')V(x_i)\big)
+                    \| \nabla F(x_i;\theta)\|^2.
+                    \]
+                </p>
+            </div>
+            <p>The model is trained for 3000 epochs using Adam with learning rate \(10^{-3}\), batch size 4096, and gradient clipping. These choices were useful for keeping optimization stable under a high-variance Monte Carlo objective. The overall setup avoids meshing the full ten-dimensional domain while still targeting the physically meaningful variational functional.</p>
+
+            <h2>Boundary Behavior and Learned Solution</h2>
+            <p>Because the boundary conditions are imposed through smooth masks rather than hard constraints, the neural approximation does not hit exactly \(0\) and \(1\) on the boundaries of \(A\) and \(B\). On held-out boundary samples, the reported averages are</p>
+            <div class="equation">
+                <p>
+                    \[
+                    \overline{q}|_{\partial A}=0.156,
+                    \qquad
+                    \overline{q}|_{\partial B}=0.938.
+                    \]
+                </p>
+            </div>
+            <p>This is a meaningful modeling detail rather than a cosmetic issue: it suggests a smoothed boundary layer induced by the architecture and training objective. In practice, the learned surface still captures the transition geometry well, and the committor-analysis validation below is the stronger test of whether the solution is placed correctly.</p>
+
+            <div class="image-grid">
+                <div class="image-container">
+                    <img src="img/amsc808n_project2/committor_solution.png" alt="Learned committor and q equals 0.5 transition curve">
+                    <p class="caption">Rugged Muller potential and the learned committor. The yellow dashed curve marks the projected \(q=0.5\) isocommittor.</p>
+                </div>
+                <div class="image-container">
+                    <img src="img/amsc808n_project2/committor_histogram.png" alt="Histogram of empirical committor probabilities">
+                    <p class="caption">Histogram of empirical committor probabilities from trajectory launches near the predicted transition surface.</p>
+                </div>
+            </div>
+
+            <h2>Committor Analysis Validation</h2>
+            <p>To verify the learned transition surface, I first generate a candidate pool of 600,000 points and retain the 30,000 closest to the neural-network prediction of the \(q=0.5\) level set. A fast pre-screening stage launches 40 short Euler-Maruyama trajectories from each candidate and keeps only those with empirical committor values in \([0.45,0.55]\). From this filtered pool, I select 100 starting points for the full validation experiment. This creates a two-stage evaluation pipeline: cheap screening first, then more expensive simulation only on the most informative starts.</p>
+            <p>The starting points are selected using the two-dimensional projection of the transition curve, but the actual launches take place in the full ten-dimensional energy landscape. For coordinates \(x_3,\dots,x_{10}\), I sample independently from \(\mathcal{N}(0,\sigma^2)\) with \(\sigma=0.05\), consistent with the confining part of the full potential.</p>
+            <p>The full validation uses Euler-Maruyama time stepping with \(\Delta t=10^{-3}\), a maximum of 8000 steps, and stopping upon first hitting \(A\) or \(B\). For each of the 100 selected starts, I run 200 trajectories and estimate the empirical committor by the fraction that reach \(B\) first.</p>
+
+            <h2>Results</h2>
+            <p>The resulting histogram peaks at \(p=0.477\), with standard deviation \(0.094\). In addition, \(68\%\) of the empirical values lie in the interval \([0.4,0.6]\). The peak is slightly below the ideal value \(0.5\), but the discrepancy is modest and consistent with finite-sample variability. I also checked that the peak location remains stable when increasing the trajectory cap to 12,000 steps and when halving the time step to \(5\times 10^{-4}\), which gives a useful robustness check on the evaluation itself.</p>
+            <p>Overall, this project shows that the variational neural approach can recover a meaningful transition-state surface in a high-dimensional stochastic system, with Monte Carlo evidence supporting the placement of the learned \(q=0.5\) isocommittor. Beyond the PDE result itself, the project emphasizes architecture design, importance sampling, optimization stability, and validation against simulation rather than relying only on training loss. The most visible limitation is the smoothed boundary enforcement, which could likely be improved by sharper masks or more aggressive boundary-focused sampling.</p>
+
+            <a class="back-link" href="projects.html">Back to Projects</a>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navToggle = document.querySelector('.nav-toggle');
+            const nav = document.querySelector('nav');
+
+            navToggle.addEventListener('click', () => {
+                nav.classList.toggle('active');
+            });
+
+            const navLinks = document.querySelectorAll('nav ul li a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    nav.classList.remove('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FT99HW58XX"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FT99HW58XX');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fourier Neural Operator for Committor Problems - Yuan-Chih Hsieh</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        header {
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            position: relative;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .content {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        h2 {
+            color: #0066cc;
+            margin-top: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        p {
+            color: #555;
+            line-height: 1.7;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 0.6rem;
+            color: #555;
+        }
+        .equation {
+            overflow-x: auto;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 1.5rem 0;
+        }
+        img {
+            border-radius: 8px;
+            max-width: 100%;
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+        .caption {
+            font-size: 0.9em;
+            color: #666;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        .highlight-box {
+            background-color: #f3f6fb;
+            border-left: 4px solid #0066cc;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .content {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="teaching.html">Teaching</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="content">
+            <h1>Fourier Neural Operator for Committor Problems</h1>
+            <p>This project investigates Fourier Neural Operators for learning committor operators in one dimension. Unlike the DeepONet page, which focuses on pointwise query prediction from a low-dimensional parameter family, this model is built to process full discretized functions and output full discretized committor solutions. That makes it closer to a true function-to-function operator-learning pipeline.</p>
+
+            <div class="highlight-box">
+                <p><strong>Main role:</strong> build and benchmark a Fourier Neural Operator that maps full potential-derivative fields to full committor functions, reaching test RMSE \(4.77\times10^{-3}\) on the parametric dataset and \(1.17\times10^{-3}\) on the Gaussian-random-field dataset.</p>
+            </div>
+
+            <h2>Operator-Learning Setup</h2>
+            <p>The underlying committor equation is the same one-dimensional boundary-value problem:</p>
+            <div class="equation">
+                <p>
+                    \[
+                    q''(x)-\beta V'(x)q'(x)=0,
+                    \qquad q(-1)=0,\; q(1)=1,
+                    \qquad \beta=1.
+                    \]
+                </p>
+            </div>
+            <p>The key modeling difference is the target mapping. Here the model learns the operator</p>
+            <div class="equation">
+                <p>
+                    \[
+                    V'(x)\mapsto q(x)
+                    \]
+                </p>
+            </div>
+            <p>on a fixed discretized grid, so both input and output are entire functions rather than individual point evaluations. This is a setting where FNO is a natural fit because the task has smooth global structure and long-range dependencies across the domain.</p>
+
+            <h2>Datasets</h2>
+            <p>I build two separate datasets, each with 600 samples discretized on \(N_x=256\) spatial points and split 80/20 into training and test sets:</p>
+            <ul>
+                <li>A parametric dataset from the same three-parameter double-well-plus-bump family used in the DeepONet task.</li>
+                <li>A stochastic dataset sampled from a Gaussian random field ensemble.</li>
+            </ul>
+            <p>This dual-dataset setup matters because it evaluates the model in two very different regimes. The parametric dataset tests interpolation and extrapolation across a structured low-dimensional family, while the GRF dataset tests whether the operator can generalize across a broader random function class.</p>
+
+            <h2>Input Representation</h2>
+            <p>The input representation is one of the strongest parts of the project. For the parametric case, each sample concatenates multiple channels:</p>
+            <ul>
+                <li>the raw derivative \(V'(x)\)</li>
+                <li>a normalized copy \(f_{\mathrm{norm}}(x)\)</li>
+                <li>the spatial coordinate \(x\)</li>
+                <li>per-sample mean and standard-deviation channels</li>
+            </ul>
+            <p>This keeps absolute scale information while still stabilizing optimization. For the GRF dataset, I retain the raw derivative, coordinate, and mean/std channels, but intentionally omit the z-scored copy. That design decision avoids washing out the stochastic amplitude information that may be informative for the operator.</p>
+            <p>That kind of feature design is easy to overlook, but it is a large part of why the final model works well. The architecture is important, but the representation is doing real work here by exposing both global scale and local structure to the network.</p>
+
+            <h2>FNO Architecture</h2>
+            <p>The final FNO uses width 96, 48 retained Fourier modes, and 4 Fourier layers. Each spectral block applies a Fourier transform, learns a low-mode transformation, and maps back to physical space:</p>
+            <div class="equation">
+                <p>
+                    \[
+                    \mathcal{F}^{-1}\big(R_{\mathrm{modes}}\cdot \mathcal{F}(x)\big),
+                    \]
+                </p>
+            </div>
+            <p>where \(\mathcal{F}\) is the Fourier transform and \(R_{\mathrm{modes}}\) is the learned operator in frequency space. Pointwise convolutions complement the spectral blocks, GELU activations are used in the lifted representation, and a sigmoid output head keeps predictions in the physically meaningful interval \([0,1]\).</p>
+            <p>The architecture is well matched to the task because the committor is a smooth global object. Local pointwise models can fit it, but spectral layers are better aligned with the fact that the solution depends on global characteristics of the potential, not just local neighborhoods.</p>
+
+            <h2>Training Strategy</h2>
+            <p>The FNO is trained with Adam using learning rate \(10^{-3}\), weight decay \(10^{-6}\), and a maximum of 350 epochs with early stopping. A soft boundary-condition penalty is applied at every batch:</p>
+            <div class="equation">
+                <p>
+                    \[
+                    \lambda_{\mathrm{bc}}\big[(q(-1))^2+(q(1)-1)^2\big],
+                    \qquad
+                    \lambda_{\mathrm{bc}}=10^{-2}.
+                    \]
+                </p>
+            </div>
+            <p>This setup keeps the optimization stable while preserving flexibility in the interior of the domain. As with the DeepONet project, the boundary handling is soft rather than exact, but it is sufficient to keep the predictions physically consistent while avoiding a more restrictive hard-constraint parameterization.</p>
+
+            <h2>Results</h2>
+            <table>
+                <tr>
+                    <th>Model</th>
+                    <th>Dataset</th>
+                    <th>Train RMSE</th>
+                    <th>Test RMSE</th>
+                </tr>
+                <tr>
+                    <td>DeepONet</td>
+                    <td>Parametric</td>
+                    <td>\(3.92\times10^{-3}\)</td>
+                    <td>\(6.68\times10^{-3}\)</td>
+                </tr>
+                <tr>
+                    <td>FNO</td>
+                    <td>Parametric</td>
+                    <td>\(4.29\times10^{-3}\)</td>
+                    <td>\(4.77\times10^{-3}\)</td>
+                </tr>
+                <tr>
+                    <td>FNO</td>
+                    <td>GRF</td>
+                    <td>\(1.09\times10^{-3}\)</td>
+                    <td>\(1.17\times10^{-3}\)</td>
+                </tr>
+            </table>
+            <p>These numbers show two important things. First, on the shared parametric benchmark, the FNO improves test RMSE from \(6.68\times10^{-3}\) for DeepONet to \(4.77\times10^{-3}\), while keeping train and test performance close. Second, on the more difficult stochastic GRF operator, the FNO reaches \(1.17\times10^{-3}\) test RMSE, which is dramatically better than the earlier DeepONet behavior in the original GRF-to-committor setting.</p>
+
+            <div class="image-container">
+                <img src="img/amsc808n_project3/task3_rmse_barplot.png" alt="Bar plot comparing train and test RMSE for DeepONet and FNO">
+                <p class="caption">RMSE comparison across neural-operator models and datasets. The FNO achieves the best test error on both the parametric and GRF committor tasks.</p>
+            </div>
+
+            <h2>Why FNO Works Better Here</h2>
+            <p>The clearest distinction between the models is how they process information. DeepONet decomposes the prediction into a branch encoding of the input and a trunk encoding of the query location, then combines them pointwise. That is flexible and useful for arbitrary query evaluation, but it can struggle to capture the full global structure of the operator when the relationship between input and output is better viewed as a field transformation.</p>
+            <p>The FNO, by contrast, operates directly on discretized functions. Its spectral convolutions expose long-range structure naturally, and its computational profile is attractive for grid-based operator learning. The project report highlights this directly: the Fourier representation is well matched to smooth function spaces with global dependencies, and the empirical results back that up.</p>
+
+            <h2>Why This Is One of the Strongest Projects</h2>
+            <p>This page is strong because it combines model design, feature engineering, benchmark construction, and comparative evaluation in a way that is easy to defend technically. It is not just an implementation of a published architecture. The important work is in adapting the FNO to this committor setting, choosing channels that preserve amplitude information, benchmarking on both structured and stochastic datasets, and comparing against a serious DeepONet baseline rather than presenting the model in isolation.</p>
+            <p>The outcome is also unusually clean. The final train/test gaps are small, the operator generalization is strong, and the comparison tells a coherent story: when the task is full-function-to-full-function learning with smooth global structure, the spectral operator model is the better inductive bias.</p>
+
+            <a class="back-link" href="projects.html">Back to Projects</a>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navToggle = document.querySelector('.nav-toggle');
+            const nav = document.querySelector('nav');
+
+            navToggle.addEventListener('click', () => {
+                nav.classList.toggle('active');
+            });
+
+            const navLinks = document.querySelectorAll('nav ul li a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    nav.classList.remove('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

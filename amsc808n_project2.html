@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FT99HW58XX"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FT99HW58XX');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMSC808N Project 2 - Yuan-Chih Hsieh</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        header {
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            position: relative;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .content {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        h2 {
+            color: #0066cc;
+            margin-top: 2rem;
+            margin-bottom: 0.5rem;
+            scroll-margin-top: 90px;
+        }
+        h3 {
+            color: #333;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        p {
+            color: #555;
+            line-height: 1.6;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        .equation {
+            overflow-x: auto;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        img {
+            border-radius: 8px;
+            max-width: 100%;
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+        .caption {
+            font-size: 0.9em;
+            color: #666;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        .section-intro {
+            background-color: #f3f6fb;
+            border-left: 4px solid #0066cc;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        .project-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin: 1.5rem 0 2rem;
+        }
+        .project-nav a {
+            color: #0066cc;
+            text-decoration: none;
+            border: 1px solid #c9d8ee;
+            background-color: #f8fbff;
+            border-radius: 999px;
+            padding: 0.5rem 0.9rem;
+        }
+        .project-nav a:hover {
+            text-decoration: underline;
+        }
+        .divider {
+            border: 0;
+            border-top: 1px solid #e0e0e0;
+            margin: 2rem 0;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .content {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="teaching.html">Teaching</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="content">
+            <h1>AMSC808N Project 2</h1>
+            <p>This page collects three related numerical experiments from AMSC808N: a variational neural network solver for the committor problem, a PINNs solver for the Allen-Cahn equation, and a spectral baseline used for reference and error analysis.</p>
+
+            <div class="section-intro">
+                <p><strong>Focus:</strong> operator learning and scientific machine learning for transition-path analysis and PDE solving, with side-by-side comparisons between neural and classical numerical methods.</p>
+            </div>
+
+            <div class="project-nav">
+                <a href="#committor">Committor</a>
+                <a href="#pinns">PINNs</a>
+                <a href="#spectral">Spectral Baseline</a>
+            </div>
+
+            <h2 id="committor">Variational Neural Network for the Committor</h2>
+            <p>This project solves the committor equation on the rugged Muller potential with high-dimensional noise using a neural network derived from the variational formulation. The committor \(q(x)\) measures the probability that a stochastic trajectory reaches set \(B\) before set \(A\), making it a natural object for identifying transition regions.</p>
+            <div class="equation">
+                <p>
+                    \[
+                    q(x)=\mathbb{P}_x \left\{ \tau_B < \tau_A \right\}
+                    \]
+                </p>
+            </div>
+            <p>The learned solution is validated through committor analysis near the level set \(q=0.5\). Points close to the estimated transition surface are sampled, short stochastic trajectories are launched from each point, and the empirical hitting probability is compared against the ideal value of \(0.5\).</p>
+            <ul>
+                <li>The \(q=0.5\) isocommittor is extracted in the \((x_1, x_2)\)-plane to identify the transition region.</li>
+                <li>Monte Carlo trajectory tests check whether the learned surface is balanced between the two metastable sets.</li>
+                <li>The empirical histogram peaks near \(0.477\), which is consistent with a well-placed transition surface under finite-sample noise.</li>
+            </ul>
+            <div class="image-grid">
+                <div class="image-container">
+                    <img src="img/amsc808n_project2/committor_solution.png" alt="Learned committor on the rugged Muller potential">
+                    <p class="caption">Learned committor and the projected \(q=0.5\) transition curve.</p>
+                </div>
+                <div class="image-container">
+                    <img src="img/amsc808n_project2/committor_histogram.png" alt="Histogram from committor analysis">
+                    <p class="caption">Empirical committor histogram from Monte Carlo checks near the transition state surface.</p>
+                </div>
+            </div>
+
+            <hr class="divider">
+
+            <h2 id="pinns">PINNs for the Allen-Cahn Equation</h2>
+            <p>This part of the project uses physics-informed neural networks to solve the 1D Allen-Cahn initial-boundary value problem. The training objective combines PDE residual loss with initial and boundary condition losses so the neural network approximates the full space-time solution directly.</p>
+            <div class="equation">
+                <p>
+                    \[
+                    u_t - 0.0001u_{xx} + 5u^3 - 5u = 0
+                    \]
+                </p>
+            </div>
+            <p>The network is trained for 2000 epochs and then evaluated against a spectral reference solution. The comparison shows that the PINNs model captures the phase-separation structure and interface evolution well, while also offering fast evaluation once training is complete.</p>
+            <ul>
+                <li>The final comparison reports MAE \(\approx 1.04 \times 10^{-1}\) and RMSE \(\approx 2.70 \times 10^{-1}\).</li>
+                <li>The predicted solution range remains close to the reference range, indicating stable learning of the phase structure.</li>
+                <li>Time-slice comparisons show slightly smoother transitions than the reference solver while preserving the correct overall dynamics.</li>
+            </ul>
+            <div class="image-grid">
+                <div class="image-container">
+                    <img src="img/amsc808n_project2/allen_cahn_loss_curves.png" alt="PINNs training loss curves">
+                    <p class="caption">Training loss history for PDE, initial-condition, and boundary-condition terms.</p>
+                </div>
+                <div class="image-container">
+                    <img src="img/amsc808n_project2/allen_cahn_time_slices.png" alt="Allen-Cahn time slice comparison">
+                    <p class="caption">Representative time slices comparing the PINNs solution against the numerical reference.</p>
+                </div>
+            </div>
+
+            <hr class="divider">
+
+            <h2 id="spectral">Spectral Baseline for Allen-Cahn</h2>
+            <p>The spectral baseline provides the reference solution used to evaluate the PINNs model. A Fourier spectral discretization on a uniform grid gives a fast and accurate numerical benchmark, making it useful both for validation and for understanding where the neural approximation smooths or deviates from the baseline.</p>
+            <p>The saved spectral dataset contains the full space-time solution on a dense grid with 256 spatial points and 1001 time levels. This reference solver is substantially faster to generate than the PINNs training loop and serves as the main accuracy baseline for error visualization.</p>
+            <ul>
+                <li>The spectral solver supplies the benchmark arrays used for pointwise comparison across the whole space-time grid.</li>
+                <li>Heatmap comparisons make the agreement and residual structure immediately visible.</li>
+                <li>The workflow highlights a practical tradeoff: classical solvers are efficient to generate for fixed settings, while trained neural surrogates are attractive for rapid post-training inference.</li>
+            </ul>
+            <div class="image-container">
+                <img src="img/amsc808n_project2/allen_cahn_heatmaps.png" alt="Allen-Cahn spectral and PINNs heatmaps">
+                <p class="caption">Side-by-side comparison of the spectral reference, the PINNs solution, and the absolute error.</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navToggle = document.querySelector('.nav-toggle');
+            const nav = document.querySelector('nav');
+
+            navToggle.addEventListener('click', () => {
+                nav.classList.toggle('active');
+            });
+
+            const navLinks = document.querySelectorAll('nav ul li a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    nav.classList.remove('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

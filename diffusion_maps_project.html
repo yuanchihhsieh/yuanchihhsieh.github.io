@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FT99HW58XX"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FT99HW58XX');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diffusion Maps for Committors and Molecular Manifolds - Yuan-Chih Hsieh</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Courier New', monospace; background-color: #f9f9f9; margin: 0; padding: 0; overflow-x: hidden; }
+        header { background-color: rgba(255,255,255,0.9); box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 1rem; position: relative; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .content { background-color: #fff; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h1 { color: #333; margin-bottom: 1rem; }
+        h2 { color: #0066cc; margin-top: 2rem; margin-bottom: 0.5rem; }
+        h3 { color: #333; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+        p { color: #555; line-height: 1.7; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 0.6rem; color: #555; }
+        .equation { overflow-x: auto; text-align: center; margin: 1rem 0; }
+        .highlight-box { background-color: #f3f6fb; border-left: 4px solid #0066cc; padding: 1rem 1.25rem; border-radius: 8px; margin: 1.5rem 0; }
+        .image-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .image-container { display: flex; flex-direction: column; align-items: center; margin: 1.5rem 0; }
+        img { border-radius: 8px; max-width: 100%; height: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
+        .caption { font-size: 0.9em; color: #666; text-align: center; margin-top: 0.5rem; }
+        .back-link { display: inline-block; margin-top: 1rem; color: #0066cc; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        @media (max-width: 768px) { .container { padding: 1rem; } .content { padding: 1.25rem; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-toggle"><span></span><span></span><span></span></div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="teaching.html">Teaching</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="content">
+            <h1>Diffusion Maps for Committors and Molecular Manifolds</h1>
+            <p>This project studies diffusion-map methods in two settings that share the same core idea: build a data-driven operator from a point cloud and use it to recover physically meaningful low-dimensional structure. In the first part, I use target-measure diffusion maps to solve a committor problem on the Face potential and compare the result against a finite-element reference. In the second part, I use diffusion maps to recover the residence manifold of a 7-atom Lennard-Jones system after a symmetry-respecting feature transform.</p>
+
+            <div class="highlight-box">
+                <p><strong>Main role:</strong> build and evaluate diffusion-map pipelines for both committor computation and molecular manifold discovery, with emphasis on kernel bandwidth selection, graph sparsification, Ksum diagnostics, and geometry-aware feature design.</p>
+            </div>
+
+            <h2>Part I: TMDmap for a Committor Problem</h2>
+            <p>The first task considers the overdamped Langevin committor problem on the Face potential at inverse temperature \(\beta=3\):</p>
+            <div class="equation">
+                <p>
+                    \[
+                    \nabla \cdot \left(e^{-\beta V(x,y)}\nabla q(x,y)\right)=0,
+                    \qquad
+                    q|_{\partial A}=0,
+                    \qquad
+                    q|_{\partial B}=1.
+                    \]
+                </p>
+            </div>
+            <p>The goal is to approximate the generator of the overdamped Langevin dynamics on a point cloud and then solve the discrete committor equation \(L_{\varepsilon}q=0\) with Dirichlet conditions on the metastable sets. I replaced the original delta-net dataset with FEM mesh points from <code>FEM_pts_comm.npz</code> and treated the supplied FEM committor values as ground truth for evaluation.</p>
+
+            <h3>Bandwidth Study and Error Curves</h3>
+            <p>I implemented two versions of the diffusion-map operator. The first is the distance-neighborhood version supplied in the notebook. The second is a k-nearest-neighbor variant that keeps only the largest kernel entries in each row, symmetrizes the resulting sparse matrix, and then applies the same TMDmap normalization. I tested \(k=32,64,128\).</p>
+            <p>The primary evaluation metric is mean absolute error against the FEM committor. Across \(\varepsilon\in[10^{-3},1]\), all methods exhibit the expected U-shaped error curve: very small bandwidths make the graph too sparse and unstable, while very large bandwidths oversmooth the operator. The minimum occurs at an intermediate scale around \(\varepsilon\approx 6\times10^{-3}\) to \(10^{-2}\). The knn variants with \(k=32\) and \(k=64\) slightly outperform the dn version near the optimum, although all methods are competitive in the best region.</p>
+            <div class="image-container">
+                <img src="img/amsc808n_project4/committor_error_vs_epsilon.png" alt="MAE versus epsilon for TMDmap committor solvers">
+                <p class="caption">Mean absolute error between the diffusion-map committor and the FEM committor across kernel bandwidth values.</p>
+            </div>
+
+            <h3>Ksum Test for Bandwidth Selection</h3>
+            <p>A central part of the project is the Ksum scaling test, which provides a data-driven way to choose \(\varepsilon\) without access to the FEM solution. For each bandwidth, I compute</p>
+            <div class="equation">
+                <p>
+                    \[
+                    S(\varepsilon)=\sum_{i,j}\exp\left(-\frac{\|x_i-x_j\|^2}{\varepsilon}\right).
+                    \]
+                </p>
+            </div>
+            <p>For data supported on a \(d\)-dimensional manifold, the slope \(d\log S / d\log \varepsilon\) should approach \(d/2\). In this case, the slope stabilizes near 1, consistent with the intrinsic dimension \(d=2\). Selecting the bandwidth at which the slope is closest to 1 yields the estimate \(\varepsilon^\ast\approx 3.36\times10^{-3}\).</p>
+            <div class="image-grid">
+                <div class="image-container">
+                    <img src="img/amsc808n_project4/ksum_logS_logeps.png" alt="log S versus log epsilon">
+                    <p class="caption">\(\log S(\varepsilon)\) versus \(\log \varepsilon\).</p>
+                </div>
+                <div class="image-container">
+                    <img src="img/amsc808n_project4/ksum_slope.png" alt="Slope of log S versus log epsilon">
+                    <p class="caption">Numerical slope of \(\log S\) with respect to \(\log \varepsilon\), stabilizing near the intrinsic-dimension prediction.</p>
+                </div>
+            </div>
+            <p>When plotted against the actual MAE curve, the Ksum-predicted \(\varepsilon^\ast\) lands very close to the true minimizer region. That is important because it shows the bandwidth-selection heuristic is practically useful even without access to ground truth labels.</p>
+            <div class="image-container">
+                <img src="img/amsc808n_project4/epsstar_vs_mae.png" alt="Ksum predicted epsilon star versus MAE curve">
+                <p class="caption">Comparison between the Ksum-predicted \(\varepsilon^\ast\) and the observed committor error curve.</p>
+            </div>
+
+            <h2>Part II: Diffusion Maps for the LJ7 Residence Manifold</h2>
+            <p>The second task studies a 7-atom Lennard-Jones system in two dimensions. Each configuration is a point in \(\mathbb{R}^{14}\), with potential energy given by the pairwise Lennard-Jones interaction. Rather than applying diffusion maps directly to raw coordinates, I first map each configuration to the sorted vector of coordination numbers. This feature map removes translational, rotational, and permutational symmetries while preserving the physically relevant local structure of the atomic arrangement.</p>
+            <p>That symmetry-aware feature design is essential. Without it, the geometry of the point cloud would be contaminated by nuisance degrees of freedom; with it, the embedding becomes much more interpretable as a representation of genuine molecular state variation.</p>
+
+            <h3>Energy Landscape and Embedding Quality</h3>
+            <p>After feature construction, I compute the Lennard-Jones energy and use it as the coloring variable throughout the embedding analysis. The energy histogram shows that most sampled configurations occupy a moderately low-energy band, with a thinner tail extending into higher-energy states.</p>
+            <div class="image-container">
+                <img src="img/amsc808n_project4/fig_energy_hist.png" alt="Energy histogram for LJ7 dataset">
+                <p class="caption">Distribution of Lennard-Jones energies in the subsampled LJ7 dataset.</p>
+            </div>
+
+            <p>I then apply the knn diffusion-map algorithm with \(\alpha=1\), extract the first three nontrivial eigenvectors \((\psi_1,\psi_2,\psi_3)\), and search over \(k\) and \(\varepsilon\). Among all tested parameter pairs, \((k,\varepsilon)=(1024,1.0)\) produces the cleanest embedding: a smooth, approximately two-dimensional surface in \(\mathbb{R}^3\) whose branches vary coherently with potential energy.</p>
+            <div class="image-container">
+                <img src="img/amsc808n_project4/fig_k1024_eps1p0.png" alt="Best diffusion map embedding for LJ7 system">
+                <p class="caption">Best diffusion-map embedding for the LJ7 dataset, obtained with \(k=1024\) and \(\varepsilon=1.0\), colored by Lennard-Jones energy.</p>
+            </div>
+
+            <h3>Parameter Sensitivity</h3>
+            <p>Fixing \(k=1024\) and varying the bandwidth confirms that \(\varepsilon=1.0\) is the most balanced choice. At \(\varepsilon=0.5\), the embedding becomes slightly contracted; at \(\varepsilon=1.5\), it is visibly oversmoothed. Varying \(k\) at fixed \(\varepsilon=1.0\) shows a similar tradeoff: \(k=512\) produces more local noise and discontinuity, while \(k=2048\) blurs meaningful geometric distinctions. These experiments are useful because they demonstrate that the final embedding quality is not accidental but tied to concrete graph-construction choices.</p>
+            <div class="image-grid">
+                <div class="image-container">
+                    <img src="img/amsc808n_project4/fig_k1024_eps0p5.png" alt="Embedding with epsilon 0.5">
+                    <p class="caption">Embedding with \(k=1024\), \(\varepsilon=0.5\): slightly contracted geometry.</p>
+                </div>
+                <div class="image-container">
+                    <img src="img/amsc808n_project4/fig_k1024_eps1p5.png" alt="Embedding with epsilon 1.5">
+                    <p class="caption">Embedding with \(k=1024\), \(\varepsilon=1.5\): more pronounced oversmoothing.</p>
+                </div>
+            </div>
+            <div class="image-grid">
+                <div class="image-container">
+                    <img src="img/amsc808n_project4/fig_k512_eps1p0.png" alt="Embedding with k equals 512">
+                    <p class="caption">Embedding with \(k=512\): more local noise and small discontinuities.</p>
+                </div>
+                <div class="image-container">
+                    <img src="img/amsc808n_project4/fig_k2048_eps1p0.png" alt="Embedding with k equals 2048">
+                    <p class="caption">Embedding with \(k=2048\): smoother but less geometrically expressive.</p>
+                </div>
+            </div>
+
+            <h2>Takeaways</h2>
+            <p>This project makes two points clearly. First, for committor computation on point clouds, diffusion-map accuracy depends strongly on the bandwidth and graph construction, and the Ksum test provides a practical unsupervised way to choose \(\varepsilon\). Second, for molecular systems, diffusion maps become much more informative when paired with a feature map that respects the physical symmetries of the problem. In both tasks, the main contribution is not only running the algorithm, but diagnosing how the graph, bandwidth, and representation choices determine the quality of the final low-dimensional structure.</p>
+
+            <a class="back-link" href="projects.html">Back to Projects</a>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navToggle = document.querySelector('.nav-toggle');
+            const nav = document.querySelector('nav');
+            navToggle.addEventListener('click', () => { nav.classList.toggle('active'); });
+            const navLinks = document.querySelectorAll('nav ul li a');
+            navLinks.forEach(link => { link.addEventListener('click', () => { nav.classList.remove('active'); }); });
+        });
+    </script>
+</body>
+</html>

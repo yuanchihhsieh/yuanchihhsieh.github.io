@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FT99HW58XX"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FT99HW58XX');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spectral Baseline for Allen-Cahn - Yuan-Chih Hsieh</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        header {
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            position: relative;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .content {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        h2 {
+            color: #0066cc;
+            margin-top: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        p {
+            color: #555;
+            line-height: 1.7;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 0.6rem;
+            color: #555;
+        }
+        .equation {
+            overflow-x: auto;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        img {
+            border-radius: 8px;
+            max-width: 100%;
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+        .caption {
+            font-size: 0.9em;
+            color: #666;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        .highlight-box {
+            background-color: #f3f6fb;
+            border-left: 4px solid #0066cc;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .content {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="teaching.html">Teaching</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="content">
+            <h1>Spectral Baseline for Allen-Cahn</h1>
+            <p>This project builds the classical numerical reference used to evaluate the PINNs solution of the one-dimensional Allen-Cahn equation. The role of the spectral solver is not only to provide a benchmark error table, but also to give a dense and reliable space-time solution that makes it possible to visualize where the neural approximation agrees, where it smooths the interface, and how much absolute error is present over the full domain. In other words, this page is about the evaluation baseline that makes the learning results interpretable.</p>
+
+            <div class="highlight-box">
+                <p><strong>Main role:</strong> generate the benchmark solution stored in <code>Allen_Cahn_spectral_solution.npz</code>, containing the full solution on 256 spatial points and 1001 time levels, for a total of 256,256 space-time samples.</p>
+            </div>
+
+            <h2>Reference PDE</h2>
+            <p>The reference solution corresponds to the same Allen-Cahn evolution studied in the PINNs experiment:</p>
+            <div class="equation">
+                <p>
+                    \[
+                    \frac{\partial u}{\partial t}=\epsilon^2\frac{\partial^2 u}{\partial x^2}+u-u^3,
+                    \qquad \epsilon=0.1,
+                    \]
+                </p>
+            </div>
+            <p>with spatial domain \(x\in[-1,1]\), time interval \(t\in[0,1]\), and initial condition</p>
+            <div class="equation">
+                <p>
+                    \[
+                    u(0,x)=\tanh\left(\frac{x}{\sqrt{2}\epsilon}\right).
+                    \]
+                </p>
+            </div>
+            <p>In the project writeup, the numerical baseline is generated with a Fourier spectral workflow adapted from the nonlinear Schrodinger notebook. The saved solution is then reused for quantitative and visual comparison against the learned PINNs output.</p>
+
+            <h2>Numerical Method</h2>
+            <p>The reference solution is produced using a Fourier spectral discretization in space. Spatial derivatives are computed through Fourier differentiation, while the time evolution is advanced on a uniform temporal grid with time step \(\Delta t=10^{-3}\). The resulting dataset contains:</p>
+            <ul>
+                <li>256 spatial points on \([-1,1]\)</li>
+                <li>1001 time levels on \([0,1]\)</li>
+                <li>256,256 total space-time evaluation points</li>
+            </ul>
+            <p>This makes the spectral solver a strong baseline for dense error analysis. It is particularly useful because the PINNs solution can be evaluated continuously, while the spectral solver provides a trusted numerical grid on which pointwise differences can be measured directly. That pairing creates a clean benchmark workflow: one model produces fast inference, the other provides the reference target used for measurement.</p>
+
+            <h2>Modeling Detail and Numerical Caveat</h2>
+            <p>One subtle but important detail in the report is that the spectral implementation is periodic in its Fourier formulation, while the Allen-Cahn setup of interest uses a hyperbolic tangent initial profile that is not exactly periodic at the endpoints \(x=\pm 1\). This mismatch can introduce mild endpoint artifacts or Gibbs-type effects. In the reported experiment, however, the chosen grid and time step still produced a stable and useful benchmark solution for comparison.</p>
+            <p>That caveat matters because it frames the spectral result correctly: it is a high-quality practical reference, but not a perfect exact solution in the strict boundary-condition sense. For this project, it is accurate enough to expose the strengths and limitations of the PINNs approximation clearly.</p>
+
+            <h2>Comparison Value</h2>
+            <p>The benchmark solution is used to compare the PINNs output through heatmaps, time slices, and global error metrics. This keeps the comparison quantitative instead of purely visual. The reported comparison gives:</p>
+            <ul>
+                <li>MAE \(=1.04\times 10^{-1}\)</li>
+                <li>RMSE \(=2.70\times 10^{-1}\)</li>
+                <li>Reference range \([-1.028, 1.028]\)</li>
+                <li>PINNs range \([-1.006, 1.003]\)</li>
+            </ul>
+            <p>These values indicate that the spectral baseline is close enough to the learned solution to confirm correct large-scale dynamics, while still sharp enough to reveal the small smoothing errors introduced by the neural model.</p>
+
+            <div class="image-grid">
+                <div class="image-container">
+                    <img src="img/amsc808n_project2/allen_cahn_heatmaps.png" alt="Spectral baseline compared with the PINNs solution">
+                    <p class="caption">Heatmap comparison of the spectral reference, the PINNs approximation, and the absolute error across the full space-time grid.</p>
+                </div>
+                <div class="image-container">
+                    <img src="img/amsc808n_project2/allen_cahn_time_slices.png" alt="Time slices comparing spectral reference and PINNs">
+                    <p class="caption">Time-slice views at \(t=0.1\) and \(t=0.9\), showing that the spectral solution remains slightly sharper near the transition regions.</p>
+                </div>
+            </div>
+
+            <h2>Why This Baseline Matters</h2>
+            <p>The spectral solver is the computational anchor of the Allen-Cahn study. It is faster to generate than training the PINNs model, and it supplies a dense numerical reference without the need to learn parameters. That makes it the natural standard against which to judge the neural method. At the same time, the comparison highlights the tradeoff between the two approaches: spectral methods are efficient and accurate for fixed PDE settings, while neural surrogates are valuable once a trained model is needed for repeated evaluation at arbitrary query points.</p>
+            <p>In that sense, this page is less about a standalone solver and more about the benchmark infrastructure that makes the rest of the comparison credible. Without a careful baseline, the reported neural-solver results would be much harder to interpret, reproduce, or trust.</p>
+
+            <a class="back-link" href="projects.html">Back to Projects</a>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navToggle = document.querySelector('.nav-toggle');
+            const nav = document.querySelector('nav');
+
+            navToggle.addEventListener('click', () => {
+                nav.classList.toggle('active');
+            });
+
+            const navLinks = document.querySelectorAll('nav ul li a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    nav.classList.remove('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -96,6 +96,22 @@
             text-align: center; /* Center the equation */
             margin: 1rem 0; /* Add margin for spacing */
         }
+        .highlight-box {
+            background-color: #f3f6fb;
+            border-left: 4px solid #0066cc;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -118,6 +134,10 @@
         <div class="content">
             <h1>Boundary Value Problem (BVP) Solver</h1>
             <p>This project addresses a 2D boundary value problem defined on a square domain with two removed circular areas. The solution is obtained using finite element methods (FEM), which involves triangulating the domain and computing the stiffness matrix. The BVP is defined as follows:</p>
+
+            <div class="highlight-box">
+                <p><strong>Main role:</strong> formulate and solve a two-dimensional elliptic boundary value problem with a custom finite element workflow, including mesh generation, stiffness-matrix construction, and comparison of solutions with and without the full matrix coefficient term.</p>
+            </div>
             
             <!-- <h2>Problem Statement</h2>
             <p>The BVP is defined as follows:</p> -->
@@ -192,6 +212,8 @@
                 <img src="img/fem_res.png" alt="FEM Result">
                 <p class="caption">Figure 3: The solution of finite elements after introducing the matrix term.</p>
             </div>
+
+            <a class="back-link" href="projects.html">Back to Projects</a>
         </div>
     </div>
     <script>

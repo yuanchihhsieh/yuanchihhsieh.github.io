@@ -37,6 +37,9 @@
         th{background:#f2f2f2;}
         /* —— Code blocks —— */
         .code-block{background:#f5f5f5;padding:1rem;border-radius:5px;overflow-x:auto;font-size:0.9em;margin:1rem 0;}
+        .highlight-box{background:#f3f6fb;border-left:4px solid #0066cc;padding:1rem 1.25rem;border-radius:8px;margin:1.5rem 0;}
+        .back-link{display:inline-block;margin-top:1rem;color:#0066cc;text-decoration:none;}
+        .back-link:hover{text-decoration:underline;}
     </style>
 </head>
 <body>
@@ -59,6 +62,10 @@
         <div class="content">
             <h1>Optimal Interpolation for Point&nbsp;Vortex System</h1>
             <p>This project implements <strong>Optimal Interpolation (OI)</strong> to assimilate drifter observations into a nonlinear <em>point vortex</em> model with 2 vortices and 1 drifter. The goal is to understand how well a simple OI scheme can correct forecast errors and track the chaotic truth trajectory. The framework developed here allows us to validate analysis against truth and no-DA baselines, while assessing the sensitivity to background-error covariance <em>P<sup>b</sup></em>.</p>
+
+            <div class="highlight-box">
+                <p><strong>Main role:</strong> implement and analyze an optimal interpolation pipeline for a chaotic point-vortex system, with emphasis on trajectory tracking, innovation diagnostics, and sensitivity to the background-error covariance.</p>
+            </div>
 
             <h2>Point Vortex Model</h2>
             <p>Each vortex is a point singularity with circulation \(\Gamma\) embedded in incompressible, inviscid 2-D flow. Vortex coordinates \((x_j,y_j)\) evolve via:</p>
@@ -251,6 +258,8 @@
                 <li>Ide, K., Kuznetsov, L., Jones, C.K.R.T. (2002) <em>Lagrangian data assimilation for point vortex systems</em>. <strong>J. Turbulence</strong>, 3.</li>
                 <li>Kuznetsov, L., Ide, K., Jones, C.K.R.T. (2003) <em>A method for assimilation of Lagrangian data</em>. <strong>Mon. Wea. Rev.</strong>, 131(10):2247-2260.</li>
             </ul>
+
+            <a class="back-link" href="projects.html">Back to Projects</a>
         </div>
     </div>
 
