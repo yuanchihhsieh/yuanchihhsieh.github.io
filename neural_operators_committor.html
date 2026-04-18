@@ -97,6 +97,21 @@
             border-radius: 8px;
             margin: 1.5rem 0;
         }
+        .tool-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+            margin: 1rem 0 1.75rem;
+        }
+        .tool-tag {
+            display: inline-block;
+            padding: 0.35rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            border: 1px solid #d6e0ec;
+            background-color: #f5f8fb;
+            color: #3f5973;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -152,6 +167,13 @@
 
             <div class="highlight-box">
                 <p><strong>Main role:</strong> design and benchmark operator-learning pipelines for a 1D committor problem, showing that a refined DeepONet reduces test RMSE to \(6.68\times10^{-3}\) on the parametric family, while FNO further improves to \(4.77\times10^{-3}\) on the same task and \(1.17\times10^{-3}\) on the Gaussian-random-field dataset.</p>
+            </div>
+
+            <div class="tool-tags" aria-label="Tools used">
+                <span class="tool-tag">PyTorch</span>
+                <span class="tool-tag">NumPy</span>
+                <span class="tool-tag">SciPy</span>
+                <span class="tool-tag">Matplotlib</span>
             </div>
 
             <h2>Problem Definition</h2>

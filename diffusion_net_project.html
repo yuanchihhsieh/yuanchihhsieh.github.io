@@ -28,6 +28,8 @@
         ul { padding-left: 20px; }
         li { margin-bottom: 0.6rem; color: #555; }
         .highlight-box { background-color: #f3f6fb; border-left: 4px solid #0066cc; padding: 1rem 1.25rem; border-radius: 8px; margin: 1.5rem 0; }
+        .tool-tags { display: flex; flex-wrap: wrap; gap: 0.55rem; margin: 1rem 0 1.75rem; }
+        .tool-tag { display: inline-block; padding: 0.35rem 0.7rem; border-radius: 999px; font-size: 0.82rem; border: 1px solid #d6e0ec; background-color: #f5f8fb; color: #3f5973; }
         .image-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
         .image-container { display: flex; flex-direction: column; align-items: center; margin: 1.5rem 0; }
         img { border-radius: 8px; max-width: 100%; height: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
@@ -56,6 +58,14 @@
 
             <div class="highlight-box">
                 <p><strong>Main role:</strong> train a neural encoder that reproduces diffusion-map coordinates for LJ7 molecular configurations and extends the embedding reliably to unseen held-out data and dense MALA trajectory samples.</p>
+            </div>
+
+            <div class="tool-tags" aria-label="Tools used">
+                <span class="tool-tag">PyTorch</span>
+                <span class="tool-tag">scikit-learn</span>
+                <span class="tool-tag">NumPy</span>
+                <span class="tool-tag">SciPy</span>
+                <span class="tool-tag">Matplotlib</span>
             </div>
 
             <h2>Motivation</h2>

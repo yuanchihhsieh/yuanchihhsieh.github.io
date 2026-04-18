@@ -97,6 +97,21 @@
             border-radius: 8px;
             margin: 1.5rem 0;
         }
+        .tool-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+            margin: 1rem 0 1.75rem;
+        }
+        .tool-tag {
+            display: inline-block;
+            padding: 0.35rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            border: 1px solid #d6e0ec;
+            background-color: #f5f8fb;
+            color: #3f5973;
+        }
         .back-link {
             display: inline-block;
             margin-top: 1rem;
@@ -139,6 +154,12 @@
 
             <div class="highlight-box">
                 <p><strong>Main result:</strong> after 2000 training epochs, the PINNs solution agrees well with the spectral benchmark, with reported MAE \(1.04\times 10^{-1}\), RMSE \(2.70\times 10^{-1}\), no NaN values on the evaluation grid, and a predicted range of \([-1.006, 1.003]\).</p>
+            </div>
+
+            <div class="tool-tags" aria-label="Tools used">
+                <span class="tool-tag">PyTorch</span>
+                <span class="tool-tag">NumPy</span>
+                <span class="tool-tag">Matplotlib</span>
             </div>
 
             <h2>Equation and Boundary Conditions</h2>

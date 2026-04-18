@@ -16,6 +16,16 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
     <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+        html,
+        body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
         body {
             font-family: 'Courier New', monospace;
             background-color: #fff;
@@ -24,6 +34,8 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
         }
         header {
             background-color: rgba(255, 255, 255, 0.8);
@@ -66,10 +78,16 @@
         .container {
             flex-grow: 1;
             padding: 2rem;
+            width: 100%;
+            max-width: 100%;
         }
         .content {
             max-width: 1200px;
             margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+            min-width: 0;
+            overflow-x: clip;
         }
         h1 {
             color: #333;
@@ -116,9 +134,12 @@
             grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 2rem;
             align-items: stretch;
+            width: 100%;
+            min-width: 0;
         }
         .project-card {
             width: 100%;
+            min-width: 0;
             background-color: #f7f7f7;
             padding: 1.5rem;
             border-radius: 8px;
@@ -130,11 +151,13 @@
         .project-card h2 {
             font-size: 1.35rem;
             margin: 0 0 0.75rem;
+            overflow-wrap: anywhere;
         }
         .project-card p {
             margin: 0 0 0.9rem;
             color: #666;
             text-align: left;
+            overflow-wrap: anywhere;
         }
         .project-card a {
             display: inline-block;
@@ -143,6 +166,8 @@
             color: #0066cc;
             text-decoration: none;
             transition: color 0.3s ease;
+            max-width: 100%;
+            overflow-wrap: anywhere;
         }
         .project-card a:hover {
             color: #004080;
@@ -156,6 +181,7 @@
             flex-wrap: wrap;
             gap: 0.5rem;
             margin-bottom: 0.85rem;
+            min-width: 0;
         }
         .project-tag {
             display: inline-block;
@@ -166,6 +192,8 @@
             border: 1px solid #c9d8ee;
             background-color: #eef4fb;
             color: #2f4f75;
+            max-width: 100%;
+            overflow-wrap: anywhere;
         }
         .featured-card {
             background: linear-gradient(180deg, #f7fbff 0%, #f3f6fb 100%);
@@ -214,11 +242,26 @@
             }
             .project-cards {
                 grid-template-columns: 1fr; /* Change to one column for smaller screens */
+                gap: 1rem;
             }
             .project-card {
-                max-width: 90%; /* Set max width to 90% for better fit on small screens */
-                width: 85%; /* Set width to 90% for smaller screens */
+                max-width: 100%;
+                width: 100%;
                 margin: 0 auto; /* Center the card */
+            }
+            .container {
+                padding: 1rem;
+            }
+            .content {
+                overflow-x: hidden;
+                width: 100%;
+            }
+            .page-title,
+            .page-intro,
+            .section-block,
+            .project-card,
+            .project-tags {
+                min-width: 0;
             }
         }
     </style>

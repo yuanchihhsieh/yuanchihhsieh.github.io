@@ -97,6 +97,21 @@
             border-radius: 8px;
             margin: 1.5rem 0;
         }
+        .tool-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+            margin: 1rem 0 1.75rem;
+        }
+        .tool-tag {
+            display: inline-block;
+            padding: 0.35rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            border: 1px solid #d6e0ec;
+            background-color: #f5f8fb;
+            color: #3f5973;
+        }
         .back-link {
             display: inline-block;
             margin-top: 1rem;
@@ -139,6 +154,12 @@
 
             <div class="highlight-box">
                 <p><strong>Main result:</strong> the learned \(q=0.5\) transition surface passes a Monte Carlo validation check, with the empirical histogram peaking at \(p \approx 0.477\), standard deviation \(0.094\), and \(68\%\) of sampled starts lying in \([0.4, 0.6]\).</p>
+            </div>
+
+            <div class="tool-tags" aria-label="Tools used">
+                <span class="tool-tag">PyTorch</span>
+                <span class="tool-tag">NumPy</span>
+                <span class="tool-tag">Matplotlib</span>
             </div>
 
             <h2>Problem Setup</h2>
