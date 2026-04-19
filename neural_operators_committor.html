@@ -189,7 +189,7 @@
             </div>
             <p>Given a potential \(V(x)\), the task is to learn the operator that returns the corresponding committor \(q(x)\). Ground truth throughout this project is generated with the Chebyshev spectral solver in <code>Committor1D_helpers.py</code>, so every learned model is benchmarked against a reliable numerical reference rather than self-consistency alone.</p>
 
-            <h2>Why This Became a Comparison Project</h2>
+            <h2>Why the Models Are Combined</h2>
             <p>DeepONet and FNO are similar enough that treating them as two separate site entries weakens the story. They solve the same operator-learning problem, use related datasets, and are most informative when compared directly. Framed as one project, the result is much stronger: the page shows model selection, architectural reasoning, and benchmark-driven evaluation rather than two isolated implementations that repeat the same context.</p>
 
             <h2>Datasets and Experimental Framing</h2>
@@ -299,9 +299,9 @@
                 <p class="caption">Train and test RMSE comparison for the neural-operator models. The FNO achieves the lowest test error on both the shared parametric task and the GRF operator-learning task.</p>
             </div>
 
-            <h2>Why This Is One of the Strongest Projects</h2>
-            <p>This project is strong because it goes beyond implementing two known architectures. The real work is in problem framing, data construction, model adaptation, feature design, benchmark design, and analysis of why one architecture generalizes better than another. The page shows a complete modeling workflow: define the operator, generate trustworthy labels, choose a split that tests real generalization, refine one model, benchmark against another, and interpret the final error patterns in terms of architecture.</p>
-            <p>Presented this way, the project reads as a comparative study with a clear technical conclusion rather than two overlapping implementations. That makes it more coherent, more credible, and more valuable as a showcase piece.</p>
+            <h2>Takeaways</h2>
+            <p>Taken together, the experiments show that both architecture choice and problem formulation matter. DeepONet becomes much more reliable once the dataset is structured around unseen parameter triplets and the inputs are normalized and enriched with Fourier features. FNO then improves further when the task is written in its more natural function-to-function form, where the global structure of the committor can be learned directly from discretized input fields.</p>
+            <p>The final conclusion is therefore comparative rather than absolute: DeepONet can perform well on the structured parametric family, but FNO is the better fit for this operator-learning problem overall. The project closes with a clear benchmark story, a defensible train-test protocol, and a concrete modeling direction for future refinement, especially around hard boundary enforcement.</p>
 
             <a class="back-link" href="projects.html">Back to Projects</a>
         </div>

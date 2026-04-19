@@ -104,9 +104,9 @@
                 <p class="caption">Out-of-sample embedding of the dense MALA trajectory. The trajectory fills the manifold interior in a way that is consistent with the potential landscape.</p>
             </div>
 
-            <h2>Why This Project Matters</h2>
-            <p>The diffusion-map project establishes the geometry. The DiffusionNet project makes that geometry usable. Instead of recomputing graph kernels and eigenvectors every time new data arrive, the learned encoder provides a fast parametric map into the same latent coordinates. That is the real value of the method: it turns a static manifold discovery tool into a reusable representation model.</p>
-            <p>This project is especially strong because it is evaluated in a meaningful way. It does not stop at reproducing the training data. It checks whether the learned encoder preserves geometry on held-out configurations and on a dense stochastic trajectory, and it confirms that the out-of-sample points continue to align with the same energy-structured manifold. That makes the result much more convincing than a plain train-loss report.</p>
+            <h2>Takeaways</h2>
+            <p>The main result is that the diffusion-map geometry can be turned into a reusable encoder without losing the structure that made the original embedding useful. The network reproduces the training coordinates closely, then maps both unused LJ7 configurations and dense MALA trajectory data into the same low-dimensional space in a way that remains consistent with the energy-organized manifold.</p>
+            <p>That makes the conclusion practical as well as geometric: the project does not only discover a manifold, it provides a way to extend that representation to new samples without rebuilding the kernel graph and eigendecomposition each time. The held-out and trajectory tests are what make that conclusion credible.</p>
 
             <a class="back-link" href="projects.html">Back to Projects</a>
         </div>

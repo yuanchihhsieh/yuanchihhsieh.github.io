@@ -216,9 +216,9 @@
                 </div>
             </div>
 
-            <h2>Why This Baseline Matters</h2>
-            <p>The spectral solver is the computational anchor of the Allen-Cahn study. It is faster to generate than training the PINNs model, and it supplies a dense numerical reference without the need to learn parameters. That makes it the natural standard against which to judge the neural method. At the same time, the comparison highlights the tradeoff between the two approaches: spectral methods are efficient and accurate for fixed PDE settings, while neural surrogates are valuable once a trained model is needed for repeated evaluation at arbitrary query points.</p>
-            <p>In that sense, this page is less about a standalone solver and more about the benchmark infrastructure that makes the rest of the comparison credible. Without a careful baseline, the reported neural-solver results would be much harder to interpret, reproduce, or trust.</p>
+            <h2>Takeaways</h2>
+            <p>The spectral solve provides the reference that makes the Allen-Cahn comparison meaningful. It produces a dense, stable space-time solution against which the PINNs output can be checked pointwise through heatmaps, time slices, MAE, and RMSE rather than by training loss alone.</p>
+            <p>As a result, the project establishes a clear division of roles: the spectral method serves as the high-quality numerical baseline for a fixed PDE setting, while the neural model is evaluated as a surrogate against that baseline. That comparison is what turns the Allen-Cahn page into a complete story rather than a standalone training exercise.</p>
 
             <a class="back-link" href="projects.html">Back to Projects</a>
         </div>

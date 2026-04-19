@@ -265,8 +265,9 @@
             </div>
             <p>which enforces \(q(-1)=0\) and \(q(1)=1\) by construction. I call this out because it clarifies the next step technically: the current model performs well, but there is still room to make the inductive bias more physically faithful.</p>
 
-            <h2>Why This Project Stands Out</h2>
-            <p>This project is strong because it combines several important pieces of technical judgment in one place: operator-learning formulation, data-generation with a trusted spectral solver, split design that truly tests generalization, architecture refinement, feature engineering, and explicit discussion of failure modes. The final result is not just that DeepONet works, but that it works substantially better after a sequence of concrete modeling decisions that can be justified from both the mathematics of the committor problem and the behavior of the training curves.</p>
+            <h2>Takeaways</h2>
+            <p>The main lesson from this project is that DeepONet performance depends strongly on how the operator-learning problem is posed. Once the dataset is rebuilt around unseen parameter triplets and the model is supported by normalization, Fourier features, and a boundary penalty, the method becomes much more reliable and the generalization error drops substantially.</p>
+            <p>The final result is therefore not just a trained network, but a clearer understanding of which modeling choices make the architecture work on this committor problem and where its remaining limitations still lie, especially in exact boundary enforcement.</p>
 
             <div class="image-container">
                 <img src="img/amsc808n_project3/task3_rmse_barplot.png" alt="RMSE comparison between DeepONet and FNO">
