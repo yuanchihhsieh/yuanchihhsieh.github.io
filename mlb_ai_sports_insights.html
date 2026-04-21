@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FT99HW58XX"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FT99HW58XX');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLB Fantasy Sports Project - Yuan-Chih Hsieh</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f9f9f9;
+            color: #000;
+        }
+        header {
+            background-color: rgba(255, 255, 255, 0.88);
+            color: #000;
+            text-align: center;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: fixed;
+            display: block;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+        #navbar {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .nav-toggle {
+            display: none;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 101;
+        }
+        .nav-toggle span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: #000;
+            margin: 5px 0;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+        }
+        nav ul {
+            padding: 0;
+            list-style-type: none;
+            display: flex;
+            justify-content: center;
+            margin: 0;
+        }
+        nav ul li {
+            margin: 0 10px;
+        }
+        nav ul li a {
+            color: #000;
+            text-decoration: none;
+        }
+        .container {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 6.5rem 1.5rem 2rem;
+        }
+        .content {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        h2 {
+            color: #0066cc;
+            margin-top: 2rem;
+            margin-bottom: 0.6rem;
+        }
+        h3 {
+            color: #333;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        p {
+            color: #555;
+            line-height: 1.7;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 0.6rem;
+            color: #555;
+        }
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        a:hover {
+            color: #004080;
+            text-decoration: underline;
+        }
+        .highlight-box {
+            background-color: #f3f6fb;
+            border-left: 4px solid #0066cc;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        .tool-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem;
+            margin: 1rem 0 1.75rem;
+        }
+        .tool-tag {
+            display: inline-block;
+            padding: 0.35rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            border: 1px solid #d6e0ec;
+            background-color: #f5f8fb;
+            color: #3f5973;
+        }
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 1.5rem 0 2rem;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin: 1rem 0 2rem;
+        }
+        img {
+            border-radius: 8px;
+            max-width: 100%;
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+        .caption {
+            font-size: 0.9em;
+            color: #666;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0 1.5rem;
+            font-size: 0.95rem;
+        }
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 0.25rem 0 1rem;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            text-align: center;
+            white-space: nowrap;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .two-column {
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+        .section-note {
+            font-size: 0.95rem;
+            color: #666;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #0066cc;
+            text-decoration: none;
+        }
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: block;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+            nav {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: rgba(255, 255, 255, 0.9);
+            }
+            nav.active {
+                display: block;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            nav ul li {
+                margin: 0;
+                width: 100%;
+                text-align: center;
+            }
+            nav ul li a {
+                display: block;
+                padding: 10px 0;
+            }
+            .container {
+                padding: 5.5rem 1rem 1.5rem;
+            }
+            .content {
+                padding: 1.25rem;
+            }
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div id="navbar">
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/index.html">Home</a></li>
+                    <li><a href="/about.html">About</a></li>
+                    <li><a href="/projects.html">Projects</a></li>
+                    <li><a href="/teaching.html">Teaching</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+        <div class="content">
+            <h1>MLB Fantasy Sports Project: Preseason 2025 Hitter Value Forecasting</h1>
+            <p class="page-date"><time datetime="2026-04-21">February 03, 2026</time></p>
+            <p>This project builds a preseason MLB hitter value model using public season-level data from 2018 through 2025. Could we use prior-season trend features to produce a optimal draft board for the 2025 fantasy season?</p>
+
+            <div class="highlight-box">
+                <p><strong>Main result:</strong> On the held-out 2024->2025 test, the model reached RMSE 283.4, MAE 228.6, and Spearman 0.657. More importantly for a draft product, the board recovered 60% of the actual top 10 hitters and 43% of the actual top 30 hitters compared to the actual top 10 and top 30 hitters in 2025.</p>
+            </div>
+            <p>I have been in love with baseball since I was a kid. I have even played in the varsity baseball team and performed in a national game in high school. This is a personal leisure project for me to explore the intersection of baseball and mathematics. As fantasy sports become more popular in recent years, I have been curious on how could these fairly simple models perform in fantasy sports. If the model is able to predict the future performance of a player, it could be used to help the fantasy sports players to make better decisions. This project is intentionally framed only as a case study. The point is to show that it produces signals that are interpretable, measurable, and useful to support product ideas, while also making its blind spots obvious.</p>
+
+            <div class="tool-tags" aria-label="Tools used">
+                <span class="tool-tag">Python</span>
+                <span class="tool-tag">pandas</span>
+                <span class="tool-tag">NumPy</span>
+                <span class="tool-tag">scikit-learn</span>
+                <span class="tool-tag">Matplotlib</span>
+                <span class="tool-tag">FastAPI</span>              
+                <span class="tool-tag">Docker</span>
+            </div>
+
+            <h2>Introduction</h2>
+            <p><strong>This project is trying to understand a question: before a MLB fantasy season starts, which hitters look like strong draft targets in the upcoming season?</strong></p>
+
+            <p>The goal is not to claim the most optimal model performance. The goal is to understand and learn an workflow that utilzes MLB data to do feature engineering, model comparison, recommendation logic, and then interpretate the results that is useful for fantasy sports players.</p>
+
+            <h2>Methods</h2>
+            <p>The modeling unit is a player-season pair. Features come from season t, and the target is full-season fantasy points in season t+1. Training uses historical pairs up to 2023->2024, while the testing set is 2024->2025. The method is intentionally to be simple as this is only a case study. Each hitter-season represents one observation. The model sees only information that would have been available before the next season starts, then tries to forecast the next season's total. The final evaluation is a true 2024->2025 holdout, which means the reported results come from forecasting a future season from past seasons.</p>
+
+            <h3>Data</h3>
+            <p>The project ingests public MLB hitting statistics from the MLB Stats API for seasons 2018 through 2025. After normalization, it computes a fantasy-style scoring target, rate stats such as walk rate, strikeout rate, ISO, and fantasy points per plate appearance, then builds lagged rolling features over prior seasons. The table below summarizes the dataset used in this run. The most important number is the final row count of model-ready season pairs, because that is the actual supervised-learning dataset after enforcing consecutive-season targets.</p>
+            <div class="two-column">
+                <div>
+                    <h3>Technical Implementation</h3>
+                    <p>The project is implemented in Python with <code>pandas</code> and <code>NumPy</code> for data work, <code>scikit-learn</code> for baseline and models, <code>Matplotlib</code> for beautiful figures, and <code>FastAPI</code> for a lightweight serving layer. The preoject is organized into separate modules for ingestion, cleaning, feature engineering, training, evaluation, recommendations, summaries, and API services.</p>
+                    <p>Three modeling approaches are compared: a linear baseline, a single-stage gradient-boosted tree model, and the two-stage model, which predicts next-season plate appearances and next-season fantasy points per plate appearance separately. The selection logic emphasizes rank quality as well as error because the product goal is a draft board, not only point estimation.</p>
+                </div>
+                <div>
+                    <h3>Dataset Summary</h3>
+                    <div class="table-wrap"><table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Metric</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Raw player-season rows</td>
+      <td>4,239</td>
+    </tr>
+    <tr>
+      <td>Model-ready season pairs</td>
+      <td>2,825</td>
+    </tr>
+    <tr>
+      <td>Unique hitters</td>
+      <td>868</td>
+    </tr>
+    <tr>
+      <td>Distinct team labels</td>
+      <td>31</td>
+    </tr>
+    <tr>
+      <td>Raw season coverage</td>
+      <td>2018 to 2025</td>
+    </tr>
+    <tr>
+      <td>Modeled season pairs</td>
+      <td>2018-&gt;2019 through 2024-&gt;2025</td>
+    </tr>
+
+  </tbody>
+</table></div>
+                </div>
+            </div>
+
+            <h3>Feature Engineering</h3>
+            <p>The features are intentionally practical. They include prior raw totals, OPS, ISO, games played, plate appearances, rolling two- and three-season averages, volatility estimates, prior team share, and a trend delta that measures whether recent fantasy production per plate appearance is improving or cooling. This setup keeps the feature set interpretable while still capturing the main dynamics a fantasy prediction would care about.</p>
+
+            <h2>Results</h2>
+            <p>The final board is led by Shohei Ohtani, Vladimir Guerrero Jr., Gunnar Henderson, Corbin Carroll, Juan Soto. Feature importance shows that this is primarily a skill-and-opportunity model: prior fantasy output, OPS/SLG, and plate-appearance stability dominate.</p>
+
+            <h3>Model Performance</h3>
+            <p>This table compares three model families on the 2024->2025 test. The takeaway is that a two-stage structure, which separates projected playing time from per-appearance production, behaves more like a real baseball projection and improves the ranking story without requiring an deep model.</p>
+            <div class="table-wrap"><table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>model</th>
+      <th>rmse</th>
+      <th>mae</th>
+      <th>r2</th>
+      <th>spearman</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Linear Regression</td>
+      <td>297.463</td>
+      <td>236.569</td>
+      <td>0.366</td>
+      <td>0.629</td>
+    </tr>
+    <tr>
+      <td>Histogram Gradient Boosting (HGB)</td>
+      <td>284.959</td>
+      <td>229.359</td>
+      <td>0.418</td>
+      <td>0.627</td>
+    </tr>
+    <tr>
+      <td>Two-Stage Ridge + HGB</td>
+      <td>283.417</td>
+      <td>228.581</td>
+      <td>0.424</td>
+      <td>0.657</td>
+    </tr>
+  </tbody>
+</table></div>
+            <div class="image-container">
+                <img src="img/model_metrics_comparison.png" alt="Model comparison on the 2024 to 2025 holdout">
+                <div class="caption">Linear regression, histogram gradient boosting, and the two-stage are compared on the 2024->2025 season pair.</div>
+            </div>
+            <p>The scatter plot makes the story easier to see visually. The model captures the broad structure of hitter value, especially at the upper end, but it still compresses some extreme outcomes. That is consistent with a preseason model that understands talent and opportunity reasonably well but does not yet incorporate enough information about sudden role changes, injuries, or unusually large jumps.</p>
+            <div class="image-container">
+                <img src="img/actual_vs_predicted_points.png" alt="Predicted vs actual 2025 fantasy points">
+                <div class="caption">Predicted full-season 2025 fantasy points versus actual 2025 outcomes for the holdout set.</div>
+            </div>
+            <p>The top-k overlap curve is especially relevant for a draft board. It shows that the model is much stronger at identifying the top of the player pool than it is at sorting the long tail. This is realistic, as a fantasy tool does not need to rank the all hitters perfectly to still be useful. The top-30 overlap is meaningful enough to support product usefulness, but still low enough to justify caution.</p>
+            <div class="table-wrap"><table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Board Slice</th>
+      <th>Overlap Rate</th>
+      <th>Matched Players</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Top 10</td>
+      <td>0.600</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>Top 20</td>
+      <td>0.350</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>Top 30</td>
+      <td>0.433</td>
+      <td>13</td>
+    </tr>
+  </tbody>
+</table></div>
+            <div class="image-container">
+                <img src="img/topk_hit_rate.png" alt="Top-k hit rate">
+                <div class="caption">This curve shows overlap between the projected and actual top-K hitters in 2025.</div>
+            </div>
+
+            <h3>Feature Importance</h3>
+            <p>The feature-importance table shows that the model is leaning heavily on opportunity and output. <strong>Stable playing time remains one of the strongest drivers of fantasy value.</strong> This supports the intuition that even very good hitters need enough appearances to convert skill into actual fantasy points.</p>
+            <div class="table-wrap"><table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>feature</th>
+      <th>importance</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>at_bats</td>
+      <td>3.6582</td>
+    </tr>
+    <tr>
+      <td>plate_appearances</td>
+      <td>0.8615</td>
+    </tr>
+    <tr>
+      <td>rolling_fp_3</td>
+      <td>0.5701</td>
+    </tr>
+    <tr>
+      <td>games_played</td>
+      <td>0.3567</td>
+    </tr>
+    <tr>
+      <td>rolling_pa_3</td>
+      <td>0.3148</td>
+    </tr>
+    <tr>
+      <td>fantasy_points</td>
+      <td>0.2369</td>
+    </tr>
+    <tr>
+      <td>walks</td>
+      <td>0.1479</td>
+    </tr>
+    <tr>
+      <td>rolling_pa_2</td>
+      <td>0.1425</td>
+    </tr>
+    <tr>
+      <td>team_share_fp</td>
+      <td>0.1073</td>
+    </tr>
+    <tr>
+      <td>fantasy_points_per_pa</td>
+      <td>0.1071</td>
+    </tr>
+  </tbody>
+</table></div>
+            <div class="image-container">
+                <img src="img/feature_importance.png" alt="Feature importance">
+                <div class="caption">The selected model is most sensitive to offensive quality and role stability.</div>
+            </div>
+
+            <h3>2025 Draft Board</h3>
+            <p>The main recommendation is a preseason draft-target view for the 2025 season. This section focuses on the top 30 so the reader can see how the model behaves across both early-round and mid-round draft territory.</p>
+            <p>Shohei Ohtani, Vladimir Guerrero Jr., José Ramírez, Juan Soto, and Aaron Judge all show up on top of the board. This is because the model strongly rewards hitters who combine elite prior production with enough role stability. Some names are still underprojected relative to their realized 2025 output, but the board does recover much of the true top tier. The model is strong enough to recover a substantial share of the real top end, while still leaving visible misses that point to the next feature-engineering steps.</p>
+            <div class="image-container">
+                <img src="img/latest_board_backtest.png" alt="Top draft targets predicted vs actual">
+                <div class="caption">Top 30 projected hitters, the chart compares preseason predictions with actual 2025 fantasy totals.</div>
+            </div>
+
+            <h3>Supporting Player Views</h3>
+            <p>The supporting boards are designed to show that the system is doing more than reprinting the obvious superstars. The breakout watchlist highlights players whose modeled 2025 total moves up materially versus 2024. The stable board highlights hitters who combine high projection with lower volatility. The value board emphasizes players whose projected output looks strong relative to their trailing multi-season baseline. These views are useful as different fantasy players care about different decision styles. Some want the safest top-end hitters, some are willing to take more risk, and some want names whose projection is meaningfully stronger than their trailing baseline.</p>
+            <div class="image-container">
+                <img src="img/upside_vs_stability.png" alt="Upside versus stability">
+                <div class="caption">This chart separates players with breakout upside from players who project as stable full-season.</div>
+            </div>
+            <p>The breakout table is important for showing that the emerging names. Players such as Jacob Wilson, Dylan Crews, Jasson Domínguez, and Junior Caminero appear here because it blends prior output with growth-oriented signals and role expectations.</p>
+            <div class="table-wrap"><table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Player</th>
+      <th>Team</th>
+      <th>Predicted 2025 FP</th>
+      <th>2024 FP</th>
+      <th>Projection Gap</th>
+      <th>Upside Score</th>
+      <th>Trend</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Ronald Acuña Jr.</td>
+      <td>ATL</td>
+      <td>904.8</td>
+      <td>386</td>
+      <td>518.8</td>
+      <td>517.8</td>
+      <td>steady</td>
+    </tr>
+    <tr>
+      <td>Mike Trout</td>
+      <td>LAA</td>
+      <td>744.3</td>
+      <td>253</td>
+      <td>491.3</td>
+      <td>489.0</td>
+      <td>cooling</td>
+    </tr>
+    <tr>
+      <td>Trevor Story</td>
+      <td>BOS</td>
+      <td>541.3</td>
+      <td>157</td>
+      <td>384.3</td>
+      <td>380.0</td>
+      <td>cooling</td>
+    </tr>
+    <tr>
+      <td>Jasson Domínguez</td>
+      <td>NYY</td>
+      <td>474.4</td>
+      <td>98</td>
+      <td>376.4</td>
+      <td>376.4</td>
+      <td>steady</td>
+    </tr>
+    <tr>
+      <td>Zach Dezenzo</td>
+      <td>HOU</td>
+      <td>446.7</td>
+      <td>73</td>
+      <td>373.7</td>
+      <td>373.7</td>
+      <td>steady</td>
+    </tr>
+    <tr>
+      <td>Junior Caminero</td>
+      <td>TB</td>
+      <td>623.0</td>
+      <td>250</td>
+      <td>373.0</td>
+      <td>373.0</td>
+      <td>steady</td>
+    </tr>
+    <tr>
+      <td>Jacob Wilson</td>
+      <td>ATH</td>
+      <td>490.5</td>
+      <td>119</td>
+      <td>371.5</td>
+      <td>371.5</td>
+      <td>steady</td>
+    </tr>
+    <tr>
+      <td>Dylan Crews</td>
+      <td>WSH</td>
+      <td>568.8</td>
+      <td>212</td>
+      <td>356.8</td>
+      <td>356.8</td>
+      <td>steady</td>
+    </tr>
+    <tr>
+      <td>Jonatan Clase</td>
+      <td>TOR</td>
+      <td>433.5</td>
+      <td>88</td>
+      <td>345.5</td>
+      <td>345.5</td>
+      <td>steady</td>
+    </tr>
+    <tr>
+      <td>Luis Urías</td>
+      <td>SEA</td>
+      <td>481.2</td>
+      <td>146</td>
+      <td>335.2</td>
+      <td>331.1</td>
+      <td>cooling</td>
+    </tr>
+    <tr>
+      <td>Thomas Saggese</td>
+      <td>STL</td>
+      <td>376.5</td>
+      <td>51</td>
+      <td>325.5</td>
+      <td>325.5</td>
+      <td>steady</td>
+    </tr>
+    <tr>
+      <td>Andrés Chaparro</td>
+      <td>WSH</td>
+      <td>505.6</td>
+      <td>187</td>
+      <td>318.6</td>
+      <td>318.6</td>
+      <td>steady</td>
+    </tr>
+  </tbody>
+</table></div>
+            <p>The stable table is the on opposite side of the spectrum. These are hitters the model sees as strong bets to remain productive because they combine a high projected total with comparatively less volatility.</p>
+            <div class="table-wrap"><table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Player</th>
+      <th>Team</th>
+      <th>Predicted 2025 FP</th>
+      <th>Actual 2025 FP</th>
+      <th>Stability Score</th>
+      <th>Absolute Error</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Shohei Ohtani</td>
+      <td>LAD</td>
+      <td>1241.0</td>
+      <td>1629.0</td>
+      <td>1227.3</td>
+      <td>388.0</td>
+    </tr>
+    <tr>
+      <td>Vladimir Guerrero Jr.</td>
+      <td>TOR</td>
+      <td>1205.0</td>
+      <td>1215.0</td>
+      <td>1175.2</td>
+      <td>10.0</td>
+    </tr>
+    <tr>
+      <td>Juan Soto</td>
+      <td>NYY</td>
+      <td>1110.6</td>
+      <td>1565.0</td>
+      <td>1090.2</td>
+      <td>454.4</td>
+    </tr>
+    <tr>
+      <td>Gunnar Henderson</td>
+      <td>BAL</td>
+      <td>1176.3</td>
+      <td>1143.0</td>
+      <td>1080.7</td>
+      <td>33.3</td>
+    </tr>
+    <tr>
+      <td>Yordan Alvarez</td>
+      <td>HOU</td>
+      <td>1076.5</td>
+      <td>309.0</td>
+      <td>1064.5</td>
+      <td>767.5</td>
+    </tr>
+    <tr>
+      <td>José Ramírez</td>
+      <td>CLE</td>
+      <td>1062.0</td>
+      <td>1467.0</td>
+      <td>1054.4</td>
+      <td>405.0</td>
+    </tr>
+    <tr>
+      <td>Mookie Betts</td>
+      <td>LAD</td>
+      <td>1088.2</td>
+      <td>1106.0</td>
+      <td>1050.3</td>
+      <td>17.8</td>
+    </tr>
+    <tr>
+      <td>Francisco Lindor</td>
+      <td>NYM</td>
+      <td>1077.8</td>
+      <td>1395.0</td>
+      <td>1038.5</td>
+      <td>317.2</td>
+    </tr>
+    <tr>
+      <td>Aaron Judge</td>
+      <td>NYY</td>
+      <td>1067.0</td>
+      <td>1642.0</td>
+      <td>1010.9</td>
+      <td>575.0</td>
+    </tr>
+    <tr>
+      <td>Bobby Witt Jr.</td>
+      <td>KC</td>
+      <td>1042.4</td>
+      <td>1390.0</td>
+      <td>1004.5</td>
+      <td>347.6</td>
+    </tr>
+    <tr>
+      <td>Corbin Carroll</td>
+      <td>ARI</td>
+      <td>1134.2</td>
+      <td>1341.0</td>
+      <td>1002.1</td>
+      <td>206.8</td>
+    </tr>
+    <tr>
+      <td>Bryce Harper</td>
+      <td>PHI</td>
+      <td>1027.1</td>
+      <td>1031.0</td>
+      <td>991.7</td>
+      <td>3.9</td>
+    </tr>
+  </tbody>
+</table></div>
+            <p>The value table is another product feature. It highlights players whose projected output looks strong compared with their recent baseline and trend profile.</p>
+            <div class="table-wrap"><table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Player</th>
+      <th>Team</th>
+      <th>Predicted 2025 FP</th>
+      <th>2024 FP</th>
+      <th>Value Score</th>
+      <th>Trend</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Jackson Chourio</td>
+      <td>MIL</td>
+      <td>921.2</td>
+      <td>1051</td>
+      <td>921.2</td>
+      <td>steady</td>
+    </tr>
+    <tr>
+      <td>Jackson Merrill</td>
+      <td>SD</td>
+      <td>826.1</td>
+      <td>1119</td>
+      <td>826.1</td>
+      <td>steady</td>
+    </tr>
+    <tr>
+      <td>Wyatt Langford</td>
+      <td>TEX</td>
+      <td>804.6</td>
+      <td>946</td>
+      <td>804.6</td>
+      <td>steady</td>
+    </tr>
+    <tr>
+      <td>James Wood</td>
+      <td>WSH</td>
+      <td>729.9</td>
+      <td>566</td>
+      <td>729.9</td>
+      <td>steady</td>
+    </tr>
+    <tr>
+      <td>Xavier Edwards</td>
+      <td>MIA</td>
+      <td>821.7</td>
+      <td>616</td>
+      <td>697.7</td>
+      <td>steady</td>
+    </tr>
+    <tr>
+      <td>David Hamilton</td>
+      <td>BOS</td>
+      <td>644.5</td>
+      <td>595</td>
+      <td>644.5</td>
+      <td>steady</td>
+    </tr>
+    <tr>
+      <td>Jarren Duran</td>
+      <td>BOS</td>
+      <td>1027.3</td>
+      <td>1388</td>
+      <td>631.5</td>
+      <td>surging</td>
+    </tr>
+    <tr>
+      <td>Masyn Winn</td>
+      <td>STL</td>
+      <td>749.0</td>
+      <td>979</td>
+      <td>624.0</td>
+      <td>steady</td>
+    </tr>
+    <tr>
+      <td>Junior Caminero</td>
+      <td>TB</td>
+      <td>623.0</td>
+      <td>250</td>
+      <td>623.0</td>
+      <td>steady</td>
+    </tr>
+    <tr>
+      <td>Joey Ortiz</td>
+      <td>MIL</td>
+      <td>611.3</td>
+      <td>784</td>
+      <td>611.3</td>
+      <td>steady</td>
+    </tr>
+    <tr>
+      <td>Otto Lopez</td>
+      <td>MIA</td>
+      <td>610.4</td>
+      <td>673</td>
+      <td>610.4</td>
+      <td>steady</td>
+    </tr>
+    <tr>
+      <td>Tyler Fitzgerald</td>
+      <td>SF</td>
+      <td>595.8</td>
+      <td>620</td>
+      <td>595.8</td>
+      <td>steady</td>
+    </tr>
+  </tbody>
+</table></div>
+
+            <h3>What The Model Got Right And Wrong</h3>
+            <p>The lowest-error cases are helpful because they show where a simple model works well: hitters with stable talent, stable role, and relatively normal year-to-year variance. The largest misses are also informative because they point directly to missing information such as injuries, availability changes, or unusual role shifts.</p>
+            <div class="table-wrap"><table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Player</th>
+      <th>Team</th>
+      <th>Predicted 2025 FP</th>
+      <th>Actual 2025 FP</th>
+      <th>Absolute Error</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Alex Jackson</td>
+      <td>TB</td>
+      <td>142.2</td>
+      <td>142.0</td>
+      <td>0.2</td>
+    </tr>
+    <tr>
+      <td>Rob Refsnyder</td>
+      <td>BOS</td>
+      <td>363.9</td>
+      <td>363.0</td>
+      <td>0.9</td>
+    </tr>
+    <tr>
+      <td>Austin Riley</td>
+      <td>ATL</td>
+      <td>637.2</td>
+      <td>639.0</td>
+      <td>1.8</td>
+    </tr>
+    <tr>
+      <td>Colton Cowser</td>
+      <td>BAL</td>
+      <td>489.9</td>
+      <td>492.0</td>
+      <td>2.1</td>
+    </tr>
+    <tr>
+      <td>Bryce Harper</td>
+      <td>PHI</td>
+      <td>1027.1</td>
+      <td>1031.0</td>
+      <td>3.9</td>
+    </tr>
+    <tr>
+      <td>Jake Bauers</td>
+      <td>MIL</td>
+      <td>361.8</td>
+      <td>357.0</td>
+      <td>4.8</td>
+    </tr>
+    <tr>
+      <td>Jose Herrera</td>
+      <td>ARI</td>
+      <td>200.9</td>
+      <td>196.0</td>
+      <td>4.9</td>
+    </tr>
+    <tr>
+      <td>Brayan Rocchio</td>
+      <td>CLE</td>
+      <td>505.3</td>
+      <td>500.0</td>
+      <td>5.3</td>
+    </tr>
+    <tr>
+      <td>Danny Jansen</td>
+      <td>BOS</td>
+      <td>454.1</td>
+      <td>460.0</td>
+      <td>5.9</td>
+    </tr>
+    <tr>
+      <td>Enrique Hernández</td>
+      <td>LAD</td>
+      <td>331.5</td>
+      <td>325.0</td>
+      <td>6.5</td>
+    </tr>
+    <tr>
+      <td>Edmundo Sosa</td>
+      <td>PHI</td>
+      <td>426.9</td>
+      <td>418.0</td>
+      <td>8.9</td>
+    </tr>
+    <tr>
+      <td>Vladimir Guerrero Jr.</td>
+      <td>TOR</td>
+      <td>1205.0</td>
+      <td>1215.0</td>
+      <td>10.0</td>
+    </tr>
+  </tbody>
+</table></div>
+            <p>The best-fit players tend to have relatively clean continuity from one season to the next. In this table above, players such as Alex Jackson, Rob Refsnyder, Austin Riley, Colton Cowser are examples of where the model behaves sensibly because their role and production profile stayed relatively coherent.</p>
+            <div class="table-wrap"><table class="dataframe data-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Player</th>
+      <th>Team</th>
+      <th>Predicted 2025 FP</th>
+      <th>Actual 2025 FP</th>
+      <th>Absolute Error</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Geraldo Perdomo</td>
+      <td>ARI</td>
+      <td>520.4</td>
+      <td>1406.0</td>
+      <td>885.6</td>
+    </tr>
+    <tr>
+      <td>Cal Raleigh</td>
+      <td>SEA</td>
+      <td>634.5</td>
+      <td>1473.0</td>
+      <td>838.5</td>
+    </tr>
+    <tr>
+      <td>Yordan Alvarez</td>
+      <td>HOU</td>
+      <td>1076.5</td>
+      <td>309.0</td>
+      <td>767.5</td>
+    </tr>
+    <tr>
+      <td>Trent Grisham</td>
+      <td>NYY</td>
+      <td>224.5</td>
+      <td>981.0</td>
+      <td>756.5</td>
+    </tr>
+    <tr>
+      <td>Pete Crow-Armstrong</td>
+      <td>CHC</td>
+      <td>547.7</td>
+      <td>1217.0</td>
+      <td>669.3</td>
+    </tr>
+    <tr>
+      <td>Lane Thomas</td>
+      <td>CLE</td>
+      <td>791.3</td>
+      <td>140.0</td>
+      <td>651.3</td>
+    </tr>
+    <tr>
+      <td>Eugenio Suárez</td>
+      <td>ARI</td>
+      <td>516.0</td>
+      <td>1167.0</td>
+      <td>651.0</td>
+    </tr>
+    <tr>
+      <td>Hunter Goodman</td>
+      <td>COL</td>
+      <td>357.7</td>
+      <td>1003.0</td>
+      <td>645.3</td>
+    </tr>
+    <tr>
+      <td>Maikel Garcia</td>
+      <td>KC</td>
+      <td>562.8</td>
+      <td>1192.0</td>
+      <td>629.2</td>
+    </tr>
+    <tr>
+      <td>Junior Caminero</td>
+      <td>TB</td>
+      <td>623.0</td>
+      <td>1252.0</td>
+      <td>629.0</td>
+    </tr>
+    <tr>
+      <td>Julio Rodríguez</td>
+      <td>SEA</td>
+      <td>712.0</td>
+      <td>1340.0</td>
+      <td>628.0</td>
+    </tr>
+    <tr>
+      <td>Kyle Stowers</td>
+      <td>MIA</td>
+      <td>241.2</td>
+      <td>851.0</td>
+      <td>609.8</td>
+    </tr>
+  </tbody>
+</table></div>
+            <p>The miss table, by contrast, is dominated by cases such as Geraldo Perdomo, Cal Raleigh, Yordan Alvarez, Trent Grisham, where the model would have needed more context to improve such as health, lineup role, or offseason changes.</p>
+
+            <p>The team-level chart is not the core modeling output, but it helps connect player projections to broader roster context. As a team with stronger hitters projections will likely have a stronger team projection.</p>
+            <div class="image-container">
+                <img src="img/team_projection_leaderboard.png" alt="Team projection leaderboard">
+                <div class="caption">Average hitter projection by team provides a team-context view.</div>
+            </div>
+
+            <h2>Discussion</h2>
+
+            <p>The main takeaway is only a prototype. It recovers a meaningful share of the top hitter pool, produces interpretable rankings, and  interesting upside names. The test also makes the next improvement areas obvious.</p>
+            <ul>
+                <li>Pros: the project recovers a meaningful share of the true top hitter pool.</li>
+                <li>Pros: the feature set is interpretable, and the strongest signals line up with baseball intuition.</li>
+                <li>Cons: the model misses badly when availability, role, or context shifts sharply from one season to the next.</li>
+                <li>Cons: the current board is model-implied only. It is not adjusted for market ADP, DFS salary, injuries, or projected lineup role.</li>
+            </ul>
+            <p>The biggest technical lesson from the test is that most of the predictive value comes from interpretable features and sensible problem structure rather than from pushing toward unnecessarily complex modeling.</p>
+
+            <h2>Conclusion</h2>
+            <p>This project shows a preseason MLB hitter forecasting built with public data. The system recovers a part of the real top end, produces readable rankings, and concrete insights about opportunity and stable production. However, it misses some changes in role, health, or availability.</p>
+
+            <p>Note that this is only a case study for my personal interest and learning. It is not a finished and operational product. I enjoy studying the intersection of baseball and mathematics from this project.</p>
+
+            <a class="back-link" href="/projects.html">← Back to Projects</a>
+        </div>
+    </div>
+    <script>
+        const navToggle = document.querySelector('.nav-toggle');
+        const nav = document.querySelector('nav');
+        if (navToggle) {
+            navToggle.addEventListener('click', () => {
+                nav.classList.toggle('active');
+            });
+        }
+    </script>
+</body>
+</html>
