@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concurrent Game of Life - Yuan-Chih Hsieh</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f9f9f9;
+            color: #000;
+        }
+        header {
+            background-color: rgba(255, 255, 255, 0.88);
+            color: #000;
+            text-align: center;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+        #navbar {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .nav-toggle {
+            display: none;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 101;
+        }
+        .nav-toggle span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: #000;
+            margin: 5px 0;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+        }
+        nav ul {
+            padding: 0;
+            list-style-type: none;
+            display: flex;
+            justify-content: center;
+            margin: 0;
+        }
+        nav ul li {
+            margin: 0 10px;
+        }
+        nav ul li a {
+            color: #000;
+            text-decoration: none;
+        }
+        .container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 6.5rem 1.5rem 2rem;
+        }
+        .content {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        h2 {
+            color: #0066cc;
+            margin-top: 2rem;
+            margin-bottom: 0.6rem;
+        }
+        p, li {
+            color: #555;
+            line-height: 1.7;
+        }
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        a:hover {
+            color: #004080;
+            text-decoration: underline;
+        }
+        .highlight-box {
+            background-color: #f3f6fb;
+            border-left: 4px solid #0066cc;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .control {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .control label {
+            color: #506070;
+            font-size: 0.85rem;
+        }
+        .control input {
+            border: 1px solid #d5e0eb;
+            border-radius: 8px;
+            padding: 0.65rem 0.75rem;
+            font: inherit;
+        }
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin: 1rem 0 1.5rem;
+        }
+        button {
+            border: 1px solid #b9cadb;
+            background: #f4f8fc;
+            color: #2d4053;
+            border-radius: 999px;
+            padding: 0.7rem 1rem;
+            font: inherit;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #e8f0f8;
+        }
+        .button-primary {
+            background: #1f5fbf;
+            border-color: #1f5fbf;
+            color: #ffffff;
+        }
+        .button-primary:hover {
+            background: #184d9c;
+        }
+        .button-danger {
+            background: #c94f3d;
+            border-color: #c94f3d;
+            color: #ffffff;
+        }
+        .button-danger:hover {
+            background: #a83f30;
+        }
+        .button-accent {
+            background: #eef6ec;
+            border-color: #9bc28f;
+            color: #284b2a;
+        }
+        .button-accent:hover {
+            background: #e4f1df;
+        }
+        .boards {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        .panel {
+            border: 1px solid #dbe4ef;
+            border-radius: 12px;
+            padding: 1rem;
+            background: linear-gradient(180deg, #fafcff 0%, #f4f8fc 100%);
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            align-items: baseline;
+            margin-bottom: 0.75rem;
+        }
+        .panel-title {
+            color: #23364a;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        .panel-meta {
+            color: #5f7387;
+            font-size: 0.82rem;
+        }
+        .status-idle {
+            color: #5f7387;
+        }
+        .status-working {
+            color: #b7791f;
+        }
+        .status-done {
+            color: #2f855a;
+        }
+        canvas {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: #fdfdfd;
+            border-radius: 8px;
+            border: 1px solid #dce5ef;
+            display: block;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .metric-card {
+            border: 1px solid #dbe4ef;
+            border-radius: 10px;
+            padding: 1rem;
+            background: linear-gradient(180deg, #fafcff 0%, #f4f8fc 100%);
+        }
+        .metric-label {
+            color: #6b7a8b;
+            font-size: 0.85rem;
+            margin-bottom: 0.4rem;
+        }
+        .metric-value {
+            color: #23364a;
+            font-size: 1.35rem;
+            font-weight: bold;
+        }
+        .metric-subtle {
+            color: #6b7a8b;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        .code-block {
+            background-color: #f5f7fa;
+            border: 1px solid #dce5ef;
+            border-radius: 8px;
+            padding: 1rem 1.1rem;
+            overflow-x: auto;
+            color: #314152;
+            line-height: 1.6;
+            margin: 1rem 0 1.5rem;
+        }
+        .note-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .note-card {
+            border: 1px solid #dbe4ef;
+            border-radius: 10px;
+            padding: 1rem;
+            background: #fcfdff;
+        }
+        .note-card strong {
+            color: #23364a;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: #0066cc;
+            text-decoration: none;
+        }
+        @media (max-width: 980px) {
+            .controls {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .stats-grid, .note-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: block;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+            nav {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: rgba(255, 255, 255, 0.9);
+            }
+            nav.active {
+                display: block;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            nav ul li {
+                margin: 0;
+                width: 100%;
+                text-align: center;
+            }
+            nav ul li a {
+                display: block;
+                padding: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div id="navbar">
+            <div class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="main-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav id="main-nav">
+                <ul>
+                    <li><a href="/index.html">Home</a></li>
+                    <li><a href="/about.html">About</a></li>
+                    <li><a href="/projects.html">Projects</a></li>
+                    <li><a href="/teaching.html">Teaching</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+        <div class="content">
+            <h1>Concurrent Game of Life Cycle Explorer</h1>
+            <p>This project uses Conway's Game of Life as a clean concurrency case study. The rule set is simple, every generation is deterministic, and each cell update depends only on its local neighborhood. That makes it easy to verify correctness and easy to split the work across workers.</p>
+            <p>The page is organized around two different goals. The interactive board below lets you explore the simulation itself. The benchmark section further down is where the real performance claim lives. That separation matters because a browser animation is useful for interaction, but the authoritative concurrency result should come from the Go implementation rather than from browser rendering behavior.</p>
+
+            <div class="highlight-box">
+                <p><strong>How to read this page:</strong> the visible board is the simulation. A concurrent implementation runs in the background and checks that it produces the same generations. The benchmark section below then shows the measured runtime difference for the Go version under a fixed workload.</p>
+            </div>
+
+            <div class="note-grid">
+                <div class="note-card">
+                    <strong>Correctness</strong>
+                    <p>Both sides use the same Game of Life rule set, so the boards should match exactly after each step.</p>
+                </div>
+                <div class="note-card">
+                    <strong>Performance</strong>
+                    <p>The browser is useful for interaction, but the authoritative performance result is the Go benchmark shown below.</p>
+                </div>
+                <div class="note-card">
+                    <strong>Interaction</strong>
+                    <p>Click the board to toggle cells, randomize a new pattern, or run and pause the animation at your own pace.</p>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="control">
+                    <label for="rows">Rows</label>
+                    <input id="rows" type="number" min="10" max="160" value="80">
+                </div>
+                <div class="control">
+                    <label for="cols">Cols</label>
+                    <input id="cols" type="number" min="10" max="160" value="80">
+                </div>
+                <div class="control">
+                    <label for="alive">Random Live Cells</label>
+                    <input id="alive" type="number" min="0" max="12000" value="1800">
+                </div>
+                <div class="control">
+                    <label for="workers">Workers</label>
+                    <input id="workers" type="number" min="1" max="16" value="6">
+                </div>
+                <div class="control">
+                    <label for="interval">Frame Interval (ms)</label>
+                    <input id="interval" type="number" min="40" max="1000" value="140">
+                </div>
+                <div class="control">
+                    <label for="batch">Generations Per Update</label>
+                    <input id="batch" type="number" min="1" max="50" value="12">
+                </div>
+                <div class="control">
+                    <label for="seed">Seed</label>
+                    <input id="seed" type="number" value="42">
+                </div>
+            </div>
+
+            <div class="button-row">
+                <button id="applySize">Apply Size</button>
+                <button id="randomize" class="button-accent">Randomize</button>
+                <button id="clear">Clear</button>
+                <button id="step">Step Batch</button>
+                <button id="run" class="button-primary">Run</button>
+                <button id="pause" class="button-danger">Pause</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Generation</div>
+                    <div class="metric-value" id="generation">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Visible Alive Cells</div>
+                    <div class="metric-value" id="seqAliveCount">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Background Check</div>
+                    <div class="metric-subtle" id="conStatus">idle</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Sequential = Concurrent</div>
+                    <div class="metric-subtle" id="matchState">true</div>
+                </div>
+            </div>
+
+            <div class="boards">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Interactive Simulation Board</div>
+                        <div class="panel-meta"><span id="seqAlive">alive: 0</span> · <span id="seqStatus" class="status-idle">idle</span></div>
+                    </div>
+                    <canvas id="seqCanvas" width="640" height="640"></canvas>
+                </div>
+            </div>
+
+            <h2>What This Shows</h2>
+            <p>Game of Life is useful here because it is easy to understand and deterministic. Every generation is produced from the same local rule, so it is straightforward to verify that a concurrent implementation matches a sequential one exactly.</p>
+            <p>This page therefore does two jobs. First, it lets you interact with the simulation itself. Second, it shows that the concurrent implementation produces the same results as the visible sequential simulation.</p>
+            <p>The real speed evidence for this project comes from the Go implementation, where the same workload runs without browser messaging and canvas overhead. The benchmark setup in this repository uses a <code>160x160</code> board with <code>4800</code> live cells seeded from a fixed random seed. Each benchmark iteration computes one full next generation. The concurrent version splits the rows across <code>8</code> workers.</p>
+
+            <div class="stats-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Go Sequential</div>
+                    <div class="metric-value">587929 ns/op</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Go Concurrent</div>
+                    <div class="metric-value">201809 ns/op</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Verified Go Speedup</div>
+                    <div class="metric-value">2.91x</div>
+                </div>
+            </div>
+
+            <p>This result is the expected shape. The concurrent version is faster because row updates can be computed independently, but it is not <code>8x</code> faster just because there are <code>8</code> workers. Worker scheduling, memory access, coordination overhead, and the finite board size all limit the gain. A measured speedup of about <code>2.91x</code> on this workload is therefore credible and worth showing.</p>
+            <h2>Conclusion</h2>
+            <p>This project works well because the responsibilities are separated cleanly. The browser page shows the simulation and confirms that sequential and concurrent evolution agree. The Go benchmark then provides the actual performance evidence. Together, those two pieces make the project easy to understand, easy to verify, and honest about what concurrency is improving.</p>
+
+            <a class="back-link" href="/projects.html">Back to projects</a>
+        </div>
+    </div>
+
+    <script>
+        const navToggle = document.querySelector('.nav-toggle');
+        const nav = document.querySelector('nav');
+
+        if (navToggle && nav) {
+            navToggle.addEventListener('click', function () {
+                nav.classList.toggle('active');
+                const expanded = nav.classList.contains('active');
+                navToggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            });
+        }
+
+        const workerSource = `
+            self.onmessage = (event) => {
+                const { cols, source, sourceRows, activeRows, topHalo, startRow } = event.data;
+                const out = new Uint8Array(activeRows * cols);
+                let offset = 0;
+                for (let localRow = 0; localRow < activeRows; localRow++) {
+                    const sourceRow = localRow + topHalo;
+                    for (let col = 0; col < cols; col++) {
+                        let neighbors = 0;
+                        for (let dr = -1; dr <= 1; dr++) {
+                            for (let dc = -1; dc <= 1; dc++) {
+                                if (dr === 0 && dc === 0) continue;
+                                const nr = sourceRow + dr;
+                                const nc = col + dc;
+                                if (nr < 0 || nr >= sourceRows || nc < 0 || nc >= cols) continue;
+                                neighbors += source[nr * cols + nc];
+                            }
+                        }
+                        const alive = source[sourceRow * cols + col] === 1;
+                        out[offset++] = (alive && (neighbors === 2 || neighbors === 3)) || (!alive && neighbors === 3) ? 1 : 0;
+                    }
+                }
+                self.postMessage({ startRow, chunk: out }, [out.buffer]);
+            };
+        `;
+
+        const seqCanvas = document.getElementById('seqCanvas');
+        const seqCtx = seqCanvas.getContext('2d');
+
+        const rowsInput = document.getElementById('rows');
+        const colsInput = document.getElementById('cols');
+        const aliveInput = document.getElementById('alive');
+        const workersInput = document.getElementById('workers');
+        const intervalInput = document.getElementById('interval');
+        const batchInput = document.getElementById('batch');
+        const seedInput = document.getElementById('seed');
+
+        const generationEl = document.getElementById('generation');
+        const seqAliveCountEl = document.getElementById('seqAliveCount');
+        const seqAliveEl = document.getElementById('seqAlive');
+        const seqStatusEl = document.getElementById('seqStatus');
+        const conStatusEl = document.getElementById('conStatus');
+        const matchStateEl = document.getElementById('matchState');
+
+        let rows = 80;
+        let cols = 80;
+        let generation = 0;
+        let seqBoard = new Uint8Array(rows * cols);
+        let conBoard = new Uint8Array(rows * cols);
+        let running = false;
+        let timerId = null;
+        let workerBlobUrl = null;
+        let workerPool = [];
+        let workerPoolSize = 0;
+
+        function readDimensions() {
+            rows = Math.max(10, Number(rowsInput.value) || 40);
+            cols = Math.max(10, Number(colsInput.value) || 40);
+            rowsInput.value = rows;
+            colsInput.value = cols;
+        }
+
+        function seededRandom(seed) {
+            let value = seed >>> 0;
+            return () => {
+                value = (value * 1664525 + 1013904223) >>> 0;
+                return value / 4294967296;
+            };
+        }
+
+        function applySize(resetBoards = true) {
+            readDimensions();
+            rebuildWorkerPool();
+            if (resetBoards) {
+                seqBoard = new Uint8Array(rows * cols);
+                conBoard = new Uint8Array(rows * cols);
+                resetMetrics();
+                drawBoards();
+            }
+        }
+
+        function rebuildWorkerPool() {
+            const workers = Math.max(1, Math.min(Number(workersInput.value) || 1, rows));
+            for (const worker of workerPool) {
+                worker.terminate();
+            }
+            workerPool = [];
+            if (workerBlobUrl) {
+                URL.revokeObjectURL(workerBlobUrl);
+            }
+            workerBlobUrl = URL.createObjectURL(new Blob([workerSource], { type: 'application/javascript' }));
+            for (let i = 0; i < workers; i++) {
+                workerPool.push(new Worker(workerBlobUrl));
+            }
+            workerPoolSize = workers;
+        }
+
+        function randomizeBoard() {
+            readDimensions();
+            const alive = Math.min(Number(aliveInput.value), rows * cols);
+            const rand = seededRandom(Number(seedInput.value));
+            seqBoard = new Uint8Array(rows * cols);
+            conBoard = new Uint8Array(rows * cols);
+            const order = [...Array(rows * cols).keys()];
+            for (let i = order.length - 1; i > 0; i--) {
+                const j = Math.floor(rand() * (i + 1));
+                [order[i], order[j]] = [order[j], order[i]];
+            }
+            for (let i = 0; i < alive; i++) {
+                seqBoard[order[i]] = 1;
+                conBoard[order[i]] = 1;
+            }
+            resetMetrics();
+            drawBoards();
+        }
+
+        function clearBoards() {
+            seqBoard = new Uint8Array(rows * cols);
+            conBoard = new Uint8Array(rows * cols);
+            resetMetrics();
+            drawBoards();
+        }
+
+        function resetMetrics() {
+            generation = 0;
+            setPanelStatus(seqStatusEl, 'idle', 'idle');
+            setPanelStatus(conStatusEl, 'idle', 'idle');
+            updateMetrics();
+        }
+
+        function setPanelStatus(element, status, label) {
+            element.textContent = label;
+            element.className = '';
+            element.classList.add(`status-${status}`);
+        }
+
+        function aliveCount(board) {
+            let total = 0;
+            for (const cell of board) total += cell;
+            return total;
+        }
+
+        function drawBoard(ctx, board) {
+            const width = ctx.canvas.width;
+            const height = ctx.canvas.height;
+            const cellW = width / cols;
+            const cellH = height / rows;
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = '#fbfcfe';
+            ctx.fillRect(0, 0, width, height);
+
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const alive = board[row * cols + col] === 1;
+                    ctx.fillStyle = alive ? '#1f2f3f' : '#edf3f8';
+                    ctx.fillRect(col * cellW, row * cellH, cellW - 1, cellH - 1);
+                }
+            }
+        }
+
+        function drawBoards() {
+            drawBoard(seqCtx, seqBoard);
+            seqAliveEl.textContent = 'alive: ' + aliveCount(seqBoard);
+            seqAliveCountEl.textContent = String(aliveCount(seqBoard));
+            matchStateEl.textContent = boardsMatch() ? 'true' : 'false';
+            matchStateEl.style.color = boardsMatch() ? '#2f855a' : '#c94f3d';
+        }
+
+        function boardsMatch() {
+            if (seqBoard.length !== conBoard.length) return false;
+            for (let i = 0; i < seqBoard.length; i++) {
+                if (seqBoard[i] !== conBoard[i]) return false;
+            }
+            return true;
+        }
+
+        function stepSequential(board) {
+            const next = new Uint8Array(board.length);
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    let neighbors = 0;
+                    for (let dr = -1; dr <= 1; dr++) {
+                        for (let dc = -1; dc <= 1; dc++) {
+                            if (dr === 0 && dc === 0) continue;
+                            const nr = row + dr;
+                            const nc = col + dc;
+                            if (nr < 0 || nr >= rows || nc < 0 || nc >= cols) continue;
+                            neighbors += board[nr * cols + nc];
+                        }
+                    }
+                    const idx = row * cols + col;
+                    const alive = board[idx] === 1;
+                    next[idx] = (alive && (neighbors === 2 || neighbors === 3)) || (!alive && neighbors === 3) ? 1 : 0;
+                }
+            }
+            return next;
+        }
+
+        async function stepConcurrent(board) {
+            const workers = Math.max(1, Math.min(Number(workersInput.value), rows));
+            if (workers === 1) {
+                return stepSequential(board);
+            }
+            if (workerPoolSize !== workers || workerPool.length !== workers) {
+                rebuildWorkerPool();
+            }
+
+            const chunkSize = Math.ceil(rows / workers);
+            const jobs = [];
+
+            for (let i = 0; i < workers; i++) {
+                const startRow = i * chunkSize;
+                const endRow = Math.min(rows, startRow + chunkSize);
+                if (startRow >= rows) break;
+                const sourceStart = Math.max(0, startRow - 1);
+                const sourceEnd = Math.min(rows, endRow + 1);
+                const sourceRows = sourceEnd - sourceStart;
+                const activeRows = endRow - startRow;
+                const topHalo = startRow - sourceStart;
+                const source = board.slice(sourceStart * cols, sourceEnd * cols);
+                jobs.push(new Promise((resolve) => {
+                    const worker = workerPool[i];
+                    worker.onmessage = ({ data }) => {
+                        resolve(data);
+                    };
+                    worker.postMessage(
+                        { cols, source, sourceRows, activeRows, topHalo, startRow },
+                        [source.buffer]
+                    );
+                }));
+            }
+
+            const chunks = await Promise.all(jobs);
+            const next = new Uint8Array(board.length);
+            for (const { startRow, chunk } of chunks) {
+                next.set(chunk, startRow * cols);
+            }
+            return next;
+        }
+
+        function updateMetrics() {
+            generationEl.textContent = String(generation);
+            drawBoards();
+        }
+
+        async function tick() {
+            const generationsPerUpdate = Math.max(1, Number(batchInput.value) || 1);
+            setPanelStatus(seqStatusEl, 'working', 'working');
+            setPanelStatus(conStatusEl, 'working', 'checking');
+
+            for (let i = 0; i < generationsPerUpdate; i++) {
+                seqBoard = stepSequential(seqBoard);
+            }
+            setPanelStatus(seqStatusEl, 'done', 'done');
+            drawBoards();
+
+            let nextConcurrent = conBoard;
+            for (let i = 0; i < generationsPerUpdate; i++) {
+                nextConcurrent = await stepConcurrent(nextConcurrent);
+            }
+            conBoard = nextConcurrent;
+            setPanelStatus(conStatusEl, boardsMatch() ? 'done' : 'working', boardsMatch() ? 'match' : 'mismatch');
+
+            generation += generationsPerUpdate;
+            updateMetrics();
+        }
+
+        async function runLoop() {
+            if (!running) return;
+            await tick();
+            timerId = setTimeout(runLoop, Number(intervalInput.value));
+        }
+
+        function pause() {
+            running = false;
+            if (timerId) {
+                clearTimeout(timerId);
+                timerId = null;
+            }
+        }
+
+        function run() {
+            if (running) return;
+            running = true;
+            runLoop();
+        }
+
+        seqCanvas.addEventListener('click', (event) => {
+            pause();
+            readDimensions();
+            const rect = seqCanvas.getBoundingClientRect();
+            const col = Math.floor(((event.clientX - rect.left) / rect.width) * cols);
+            const row = Math.floor(((event.clientY - rect.top) / rect.height) * rows);
+            const idx = row * cols + col;
+            seqBoard[idx] = seqBoard[idx] ? 0 : 1;
+            drawBoards();
+        });
+
+        document.getElementById('applySize').addEventListener('click', () => {
+            pause();
+            applySize(true);
+        });
+        document.getElementById('randomize').addEventListener('click', () => {
+            pause();
+            randomizeBoard();
+        });
+        document.getElementById('clear').addEventListener('click', () => {
+            pause();
+            clearBoards();
+        });
+        document.getElementById('step').addEventListener('click', async () => {
+            pause();
+            await tick();
+        });
+        document.getElementById('run').addEventListener('click', run);
+        document.getElementById('pause').addEventListener('click', pause);
+
+        rowsInput.addEventListener('change', () => {
+            pause();
+            applySize(true);
+        });
+        colsInput.addEventListener('change', () => {
+            pause();
+            applySize(true);
+        });
+        workersInput.addEventListener('change', () => {
+            pause();
+            rebuildWorkerPool();
+        });
+
+        applySize(true);
+        randomizeBoard();
+    </script>
+</body>
+</html>
